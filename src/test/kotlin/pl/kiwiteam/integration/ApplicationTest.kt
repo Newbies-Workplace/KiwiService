@@ -1,4 +1,4 @@
-package integration
+package pl.kiwiteam.integration
 
 import io.ktor.http.*
 import kotlin.test.*
