@@ -1,12 +1,12 @@
-package pl.kiwiteam.integration
+package pl.teamkiwi.integration
 
 import io.ktor.server.testing.TestApplicationEngine
 import io.ktor.server.testing.withTestApplication
 import kotlin.test.*
 import org.koin.core.context.startKoin
 import org.koin.core.context.stopKoin
-import pl.kiwiteam.di.module
-import pl.kiwiteam.mainModule
+import pl.teamkiwi.di.module
+import pl.teamkiwi.mainModule
 
 abstract class IntegrationTest {
 

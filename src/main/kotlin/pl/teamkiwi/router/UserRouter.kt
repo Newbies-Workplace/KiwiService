@@ -1,11 +1,11 @@
-package pl.kiwiteam.router
+package pl.teamkiwi.router
 
 import io.ktor.application.call
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
 import org.koin.ktor.ext.inject
-import pl.kiwiteam.controller.UserController
+import pl.teamkiwi.controller.UserController
 
 fun Routing.userRoutes() {
     val userController: UserController by inject()

@@ -1,6 +1,6 @@
-package pl.kiwiteam.controller
+package pl.teamkiwi.controller
 
-import pl.kiwiteam.service.UserService
+import pl.teamkiwi.service.UserService
 
 class UserController (
     private val userService: UserService

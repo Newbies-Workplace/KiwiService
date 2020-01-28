@@ -1,4 +1,4 @@
-package pl.kiwiteam
+package pl.teamkiwi
 
 import io.ktor.application.*
 import io.ktor.features.*
@@ -10,8 +10,8 @@ import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import org.koin.core.context.startKoin
-import pl.kiwiteam.di.module
-import pl.kiwiteam.router.userRoutes
+import pl.teamkiwi.di.module
+import pl.teamkiwi.router.userRoutes
 
 fun main(args: Array<String>) {
     startKoin {

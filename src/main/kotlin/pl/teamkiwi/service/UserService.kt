@@ -1,4 +1,4 @@
-package pl.kiwiteam.service
+package pl.teamkiwi.service
 
 class UserService {
 
