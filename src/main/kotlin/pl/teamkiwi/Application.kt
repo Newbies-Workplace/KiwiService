@@ -1,23 +1,36 @@
 package pl.teamkiwi
 
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.routing.*
-import io.ktor.http.*
-import io.ktor.auth.*
-import io.ktor.gson.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.features.CORS
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.StatusPages
+import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
+import io.ktor.jackson.jackson
+import io.ktor.response.respond
+import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.core.context.startKoin
+import org.jetbrains.exposed.sql.Database
+import org.jetbrains.exposed.sql.SchemaUtils
+import org.jetbrains.exposed.sql.transactions.transaction
+import org.koin.core.logger.PrintLogger
+import org.koin.ktor.ext.Koin
 import pl.teamkiwi.di.module
+import pl.teamkiwi.di.repositoryModule
+import pl.teamkiwi.exception.BadRequestException
+import pl.teamkiwi.exception.EmailOccupiedException
+import pl.teamkiwi.exception.NoContentException
+import pl.teamkiwi.exception.NotFoundException
+import pl.teamkiwi.repository.table.Users
 import pl.teamkiwi.router.userRoutes
+import pl.teamkiwi.util.getPropOrNull
 
 fun main(args: Array<String>) {
-    startKoin {
-        modules(module)
-    }
-
     embeddedServer(
         Netty,
         commandLineEnvironment(args)
@@ -26,6 +39,25 @@ fun main(args: Array<String>) {
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.mainModule() {
+    install(Koin) {
+        logger(PrintLogger())
+
+        modules(
+            listOf(module, repositoryModule)
+        )
+    }
+
+    //todo extract
+    Database.connect(
+        url = getPropOrNull("kiwi.database.url")!!,
+        driver = getPropOrNull("kiwi.database.driver")!!,
+        user = getPropOrNull("kiwi.database.user")!!,
+        password = getPropOrNull("kiwi.database.password")!!
+    )
+    transaction {
+        SchemaUtils.create(Users)
+    }
+
     install(CORS) {
         method(HttpMethod.Put)
         method(HttpMethod.Delete)
@@ -36,7 +68,17 @@ fun Application.mainModule() {
     install(Authentication) {}
 
     install(ContentNegotiation) {
-        gson {}
+        jackson {
+
+        }
+    }
+
+    //todo extract into other class
+    install(StatusPages) {
+        exception<BadRequestException> { call.respond(HttpStatusCode.BadRequest) }
+        exception<NotFoundException> { call.respond(HttpStatusCode.NotFound) }
+        exception<EmailOccupiedException> { call.respond(HttpStatusCode.Conflict) }
+        exception<NoContentException> { call.respond(HttpStatusCode.NoContent) }
     }
 
     routing {

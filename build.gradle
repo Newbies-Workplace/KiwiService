@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
     }
-    
+
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.github.jengelman.gradle.plugins:shadow:$shadow_version"
@@ -23,6 +23,16 @@ shadowJar {
     }
 }
 
+test {
+    useJUnitPlatform()
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
 repositories {
     mavenLocal()
     jcenter()
@@ -36,18 +46,29 @@ dependencies {
     //ktor core
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-server-netty:$ktor_version"
+
 
     //auth
     implementation "io.ktor:ktor-auth:$ktor_version"
     implementation "io.ktor:ktor-auth-jwt:$ktor_version"
 
-    //gson
-    implementation "io.ktor:ktor-gson:$ktor_version"
+    //serialisation
+    implementation "io.ktor:ktor-jackson:$ktor_version"
 
     //di
     implementation "org.koin:koin-core:$koin_version"
     implementation "org.koin:koin-ktor:$koin_version"
 
+    //database
+    implementation "org.jetbrains.exposed:exposed:$exposed_version"
+    implementation "mysql:mysql-connector-java:$mysql_connector_version"
+
     //test
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junit_version"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junit_version"
+
+
     testImplementation "io.ktor:ktor-server-tests:$ktor_version"
+    testImplementation "io.mockk:mockk:$mockk_version"
 }
