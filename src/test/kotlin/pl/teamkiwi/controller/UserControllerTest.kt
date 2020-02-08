@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
+import pl.teamkiwi.converter.toUserResponse
 import pl.teamkiwi.exception.EmailOccupiedException
+import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.service.UserService
 import java.util.*
+import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class UserControllerTest {
@@ -41,7 +44,7 @@ internal class UserControllerTest {
         fun `should save user when email is free`() {
             //given
             val userCreateRequest = createTestUserCreateRequest()
-            val validUser = mockk<UserDTO>()
+            val validUser = createTestUser()
 
             every { userService.save(any()) } returns validUser
             every { userService.findByEmail(any()) } returns null
@@ -51,6 +54,42 @@ internal class UserControllerTest {
 
             //then
             verify(exactly = 1) { userService.save(userCreateRequest) }
+        }
+    }
+
+    @Nested
+    inner class GetUser{
+
+        private val userService = mockk<UserService>()
+        private val userController = UserController(userService)
+
+        @Test
+        fun `should return user when found with specified id`() {
+            //given
+            val validUserResponse = createTestUser()
+            val validId = mockk<UUID>()
+
+            every { userService.findById(validId) } returns validUserResponse
+
+            //when
+            val foundUser = userController.getUserById(validId)
+
+            //then
+            assertEquals(validUserResponse.toUserResponse(), foundUser)
+        }
+
+        @Test
+        fun `should throw NotFoundException when id doesn't match`(){
+            //given
+            val validId = mockk<UUID>()
+
+            //when
+            every { userService.findById(validId) } returns null
+
+            //then
+            assertThrows<NotFoundException> {
+                userController.getUserById(validId)
+            }
         }
     }
 

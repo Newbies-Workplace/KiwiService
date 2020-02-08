@@ -2,6 +2,7 @@ package pl.teamkiwi.service
 
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
+import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.repository.UserRepository
 import java.util.*
 

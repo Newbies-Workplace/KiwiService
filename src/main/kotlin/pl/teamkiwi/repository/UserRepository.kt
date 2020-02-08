@@ -1,9 +1,11 @@
 package pl.teamkiwi.repository
 
 import org.jetbrains.exposed.sql.transactions.transaction
-import pl.teamkiwi.converter.toUser
+import pl.teamkiwi.converter.toUserDTO
+import pl.teamkiwi.converter.toUserResponse
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
+import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.repository.dao.UserDAO
 import pl.teamkiwi.repository.table.Users
 import java.util.*
@@ -18,25 +20,25 @@ class UserRepository {
                 description = user.description
                 //todo hash password
                 passwordHash = user.password
-            }.toUser()
+            }.toUserDTO()
         }
 
     fun findById(id: UUID): UserDTO? =
         transaction {
             UserDAO.findById(id)
-                ?.toUser()
+                ?.toUserDTO()
         }
 
     fun findByEmail(email: String): UserDTO? =
         transaction {
             UserDAO.find { Users.email eq email }
                 .firstOrNull()
-                ?.toUser()
+                ?.toUserDTO()
         }
 
     fun getAll(): List<UserDTO> =
         transaction {
             UserDAO.all()
-                .map { it.toUser() }
+                .map { it.toUserDTO() }
         }
 }
