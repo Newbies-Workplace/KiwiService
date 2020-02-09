@@ -20,7 +20,7 @@ fun Routing.userRoutes() {
         call.respond("Nothing here :o")
     }
 
-    post("/user") {
+    post("/v1/user") {
         val userCreateRequest = call.safeReceiveOrNull<UserCreateRequest>() ?: throw BadRequestException()
 
         val response = userController.createUser(userCreateRequest)
@@ -28,11 +28,11 @@ fun Routing.userRoutes() {
         call.respond(HttpStatusCode.Created, response)
     }
 
-    get("/users") {
+    get("/v1/users") {
         call.respond(userController.getAllUsers())
     }
 
-    get("/user/{id}") {
+    get("/v1/user/{id}") {
         val id = call.idParameter()
 
         val response = userController.getUserById(id)

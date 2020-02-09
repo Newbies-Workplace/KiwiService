@@ -1,16 +1,19 @@
 package pl.teamkiwi.user
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.server.testing.handleRequest
 import io.ktor.server.testing.setBody
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
+import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.withMyApplication
 import java.util.stream.Stream
-import kotlin.test.assertEquals
 
 class UserCreateTest {
 
@@ -18,7 +21,7 @@ class UserCreateTest {
     @MethodSource("invalidUserCreateRequestProvider")
     fun `invalid body should return bad request`(body: TestUserRequest) {
         withMyApplication {
-            with(handleRequest(HttpMethod.Post, "/user") {
+            with(handleRequest(HttpMethod.Post, "/v1/user") {
                 addHeader("Content-Type", "application/json")
                 setBody(ObjectMapper().writeValueAsString(body))
             }) {
@@ -31,11 +34,16 @@ class UserCreateTest {
     @MethodSource("validUserCreateRequestProvider")
     fun `valid body should return created`(body: TestUserRequest) {
         withMyApplication {
-            with(handleRequest(HttpMethod.Post, "/user") {
+            with(handleRequest(HttpMethod.Post, "/v1/user") {
                 addHeader("Content-Type", "application/json")
                 setBody(ObjectMapper().writeValueAsString(body))
             }) {
+                val userResponse = jacksonObjectMapper().readValue<UserResponse>(response.content!!)
+
                 assertEquals(HttpStatusCode.Created, response.status())
+                assertEquals(body.email, userResponse.email)
+                assertEquals(body.username, userResponse.username)
+                assertEquals(body.description, userResponse.description)
             }
         }
     }
@@ -43,16 +51,16 @@ class UserCreateTest {
     @Test
     fun `occupied email should return conflict`() {
         withMyApplication {
-            with(handleRequest(HttpMethod.Post, "/user") {
+            with(handleRequest(HttpMethod.Post, "/v1/user") {
                 addHeader("Content-Type", "application/json")
-                setBody(ObjectMapper().writeValueAsString(validUserRequest))
+                setBody(jacksonObjectMapper().writeValueAsString(validUserRequest))
             }) {
                 assertEquals(HttpStatusCode.Created, response.status())
             }
 
-            with(handleRequest(HttpMethod.Post, "/user") {
+            with(handleRequest(HttpMethod.Post, "/v1/user") {
                 addHeader("Content-Type", "application/json")
-                setBody(ObjectMapper().writeValueAsString(validUserRequest))
+                setBody(jacksonObjectMapper().writeValueAsString(validUserRequest))
             }) {
                 assertEquals(HttpStatusCode.Conflict, response.status())
             }
