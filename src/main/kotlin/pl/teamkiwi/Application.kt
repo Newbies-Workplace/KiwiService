@@ -15,20 +15,17 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
-import org.jetbrains.exposed.sql.transactions.transaction
 import org.koin.core.logger.PrintLogger
 import org.koin.ktor.ext.Koin
+import org.koin.ktor.ext.get
 import pl.teamkiwi.di.module
 import pl.teamkiwi.di.repositoryModule
 import pl.teamkiwi.exception.BadRequestException
 import pl.teamkiwi.exception.EmailOccupiedException
 import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
-import pl.teamkiwi.repository.table.Users
+import pl.teamkiwi.repository.Exposed
 import pl.teamkiwi.router.userRoutes
-import pl.teamkiwi.util.getPropOrNull
 
 fun main(args: Array<String>) {
     embeddedServer(
@@ -47,15 +44,9 @@ fun Application.mainModule() {
         )
     }
 
-    //todo extract
-    Database.connect(
-        url = getPropOrNull("kiwi.database.url")!!,
-        driver = getPropOrNull("kiwi.database.driver")!!,
-        user = getPropOrNull("kiwi.database.user")!!,
-        password = getPropOrNull("kiwi.database.password")!!
-    )
-    transaction {
-        SchemaUtils.create(Users)
+    install(Exposed) {
+        connectWithConfig(get())
+        createSchemas()
     }
 
     install(CORS) {
@@ -68,9 +59,7 @@ fun Application.mainModule() {
     install(Authentication) {}
 
     install(ContentNegotiation) {
-        jackson {
-
-        }
+        jackson {}
     }
 
     //todo extract into other class
