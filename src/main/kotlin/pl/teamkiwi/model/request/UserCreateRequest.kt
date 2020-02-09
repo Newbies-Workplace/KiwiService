@@ -9,7 +9,7 @@ import pl.teamkiwi.repository.constants.EMAIL_MAX_LENGTH
 import pl.teamkiwi.repository.constants.PASSWORD_MAX_LENGTH
 import pl.teamkiwi.repository.constants.USERNAME_MAX_LENGTH
 
-class UserCreateRequest(
+data class UserCreateRequest(
     val email: String,
     val username: String,
     val description: String?,
@@ -25,11 +25,11 @@ class UserCreateRequest(
             validate(UserCreateRequest::username)
                 .isNotBlank()
                 .hasSize(max = USERNAME_MAX_LENGTH)
+            validate(UserCreateRequest::description)
+                .hasSize(max = DESCRIPTION_MAX_LENGTH)
             validate(UserCreateRequest::password)
                 .isNotBlank()
                 .hasSize(max = PASSWORD_MAX_LENGTH)
-            validate(UserCreateRequest::description)
-                .hasSize(max = DESCRIPTION_MAX_LENGTH)
         }
     }
 }

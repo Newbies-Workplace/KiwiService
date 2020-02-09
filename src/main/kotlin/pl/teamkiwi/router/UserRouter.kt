@@ -1,6 +1,7 @@
 package pl.teamkiwi.router
 
 import io.ktor.application.call
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
@@ -24,7 +25,7 @@ fun Routing.userRoutes() {
 
         val response = userController.createUser(userCreateRequest)
 
-        call.respond(response)
+        call.respond(HttpStatusCode.Created, response)
     }
 
     get("/users") {

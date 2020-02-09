@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
+import pl.teamkiwi.converter.UserConverter
 import pl.teamkiwi.converter.toUserResponse
 import pl.teamkiwi.exception.EmailOccupiedException
 import pl.teamkiwi.exception.NotFoundException
@@ -19,11 +20,12 @@ import kotlin.test.assertEquals
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class UserControllerTest {
 
+    private val userService = mockk<UserService>()
+    private val userConverter = mockk<UserConverter>(relaxed = true)
+    private val userController = UserController(userService, userConverter)
+
     @Nested
     inner class CreateUser {
-
-        private val userService = mockk<UserService>()
-        private val userController = UserController(userService)
 
         @Test
         fun `should not create user if email is occupied`() {
@@ -53,15 +55,12 @@ internal class UserControllerTest {
             userController.createUser(userCreateRequest)
 
             //then
-            verify(exactly = 1) { userService.save(userCreateRequest) }
+            verify(exactly = 1) { userService.save(with(userConverter) {userCreateRequest.toUserCreateDTO()}) }
         }
     }
 
     @Nested
     inner class GetUser{
-
-        private val userService = mockk<UserService>()
-        private val userController = UserController(userService)
 
         @Test
         fun `should return user when found with specified id`() {
@@ -92,7 +91,6 @@ internal class UserControllerTest {
             }
         }
     }
-
 }
 
 fun createTestUserCreateRequest(

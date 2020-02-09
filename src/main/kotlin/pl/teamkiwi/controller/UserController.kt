@@ -1,5 +1,6 @@
 package pl.teamkiwi.controller
 
+import pl.teamkiwi.converter.UserConverter
 import pl.teamkiwi.converter.toUserResponse
 import pl.teamkiwi.exception.EmailOccupiedException
 import pl.teamkiwi.exception.NoContentException
@@ -10,7 +11,8 @@ import pl.teamkiwi.service.UserService
 import java.util.*
 
 class UserController (
-    private val userService: UserService
+    private val userService: UserService,
+    private val userConverter: UserConverter
 ) {
 
     fun createUser(userCreateRequest: UserCreateRequest): UserResponse {
@@ -18,7 +20,9 @@ class UserController (
             throw EmailOccupiedException()
         }
 
-        return userService.save(userCreateRequest).toUserResponse()
+        val userCreateDTO = with(userConverter) { userCreateRequest.toUserCreateDTO() }
+
+        return userService.save(userCreateDTO).toUserResponse()
     }
 
     fun getUserById(id: UUID): UserResponse {
