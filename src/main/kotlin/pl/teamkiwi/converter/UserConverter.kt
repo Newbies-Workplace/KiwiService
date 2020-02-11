@@ -7,6 +7,7 @@ import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.repository.dao.UserDAO
 import pl.teamkiwi.security.PasswordEncoder
+import pl.teamkiwi.session.UserPrincipal
 
 fun UserDAO.toUserDTO() =
     UserDTO(
@@ -28,6 +29,13 @@ fun UserDTO.toUserResponse() =
         avatarPath = avatarPath,
         creationDate = creationDate
 )
+
+fun UserDTO.toUserPrincipal() =
+    UserPrincipal(
+        id = id,
+        email = email,
+        username = username
+    )
 
 class UserConverter(
     private val passwordEncoder: PasswordEncoder
