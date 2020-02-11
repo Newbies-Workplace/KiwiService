@@ -1,10 +1,13 @@
 package pl.teamkiwi.controller
 
+import pl.teamkiwi.converter.toUserPrincipal
 import pl.teamkiwi.exception.UnauthorizedException
 import pl.teamkiwi.model.request.UserLoginRequest
 import pl.teamkiwi.security.PasswordEncoder
 import pl.teamkiwi.service.UserService
 import pl.teamkiwi.session.AuthSession
+import pl.teamkiwi.session.UserPrincipal
+import java.util.*
 
 class AuthenticationController(
     private val userService: UserService,
@@ -20,6 +23,15 @@ class AuthenticationController(
             foundUser.id
         )
     }
+
+    fun validate(session: AuthSession): UserPrincipal? =
+        session.userId.let {
+            try {
+                userService.findById(UUID.fromString(it))
+            } catch (e: Exception) {
+                null
+            }
+        }?.toUserPrincipal()
 
     companion object {
         const val AUTH_SESSION_KEY = "Authorization"

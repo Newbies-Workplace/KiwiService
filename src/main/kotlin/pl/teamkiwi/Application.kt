@@ -25,15 +25,14 @@ import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.koin.ktor.ext.inject
 import org.slf4j.event.Level
+import pl.teamkiwi.controller.AuthenticationController
 import pl.teamkiwi.controller.AuthenticationController.Companion.AUTH_SESSION_KEY
-import pl.teamkiwi.converter.toUserPrincipal
 import pl.teamkiwi.di.module
 import pl.teamkiwi.di.repositoryModule
 import pl.teamkiwi.exception.*
 import pl.teamkiwi.repository.Exposed
 import pl.teamkiwi.router.authenticationRoutes
 import pl.teamkiwi.router.userRoutes
-import pl.teamkiwi.service.UserService
 import pl.teamkiwi.session.AuthSession
 import java.util.*
 
@@ -77,15 +76,13 @@ fun Application.mainModule() {
     }
 
     install(Authentication) {
-        val userService by inject<UserService>()
+        val authenticationController by inject<AuthenticationController>()
 
         session<AuthSession> {
             challenge { call.respond(HttpStatusCode.Unauthorized) }
 
             validate { session ->
-                val userId = UUID.fromString(session.userId)
-
-                userService.findById(userId)?.toUserPrincipal()
+                authenticationController.validate(session)
             }
         }
     }
