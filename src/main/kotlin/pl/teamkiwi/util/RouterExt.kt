@@ -1,8 +1,10 @@
 package pl.teamkiwi.util
 
 import io.ktor.application.ApplicationCall
+import io.ktor.auth.authentication
 import io.ktor.request.receive
 import pl.teamkiwi.exception.InvalidUUIDException
+import pl.teamkiwi.session.UserPrincipal
 import java.util.*
 
 suspend inline fun <reified T : Any> ApplicationCall.safeReceiveOrNull(): T? =
@@ -18,3 +20,6 @@ fun ApplicationCall.idParameter(): UUID =
     } catch (e: Throwable) {
         throw InvalidUUIDException()
     }
+
+fun ApplicationCall.userPrincipal(): UserPrincipal? =
+    authentication.principal()

@@ -15,6 +15,16 @@ fun Scope.getPropOrNull(key: String) =
     get<ApplicationConfig>()
         .getStringPropertyOrNull(key)
 
-fun ApplicationConfig.getStringPropertyOrNull(key: String) =
-    this.propertyOrNull(key)
-        ?.getString()
+fun Application.getProp(key: String) =
+    get<ApplicationConfig>()
+        .getStringProperty(key)
+
+fun Scope.getProp(key: String) =
+    get<ApplicationConfig>()
+        .getStringProperty(key)
+
+private fun ApplicationConfig.getStringPropertyOrNull(key: String) =
+    propertyOrNull(key)?.getString()
+
+private fun ApplicationConfig.getStringProperty(key: String) =
+    property(key).getString()
