@@ -32,6 +32,7 @@ import pl.teamkiwi.di.repositoryModule
 import pl.teamkiwi.exception.*
 import pl.teamkiwi.repository.Exposed
 import pl.teamkiwi.router.authenticationRoutes
+import pl.teamkiwi.router.songRoutes
 import pl.teamkiwi.router.userRoutes
 import pl.teamkiwi.session.AuthSession
 import java.util.*
@@ -103,5 +104,6 @@ fun Application.mainModule() {
     routing {
         authenticationRoutes()
         userRoutes()
+        songRoutes()
     }
 }

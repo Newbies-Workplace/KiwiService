@@ -5,6 +5,7 @@ import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
 import org.koin.dsl.module
 import pl.teamkiwi.controller.AuthenticationController
+import pl.teamkiwi.controller.SongController
 import pl.teamkiwi.controller.UserController
 import pl.teamkiwi.converter.UserConverter
 import pl.teamkiwi.repository.DatabaseConfiguration
@@ -18,11 +19,12 @@ val module = module {
     @Suppress("EXPERIMENTAL_API_USAGE")
     single { HoconApplicationConfig(ConfigFactory.load()) as ApplicationConfig }
     single { PasswordEncoder() }
-    single { AuthenticationController(get(), get()) }
 
     single { UserConverter(get()) }
 
+    single { AuthenticationController(get(), get()) }
     single { UserController(get(), get()) }
+    single { SongController() }
 
     single { UserService(get()) }
 }

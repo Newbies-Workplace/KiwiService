@@ -10,7 +10,7 @@ import java.util.*
 suspend inline fun <reified T : Any> ApplicationCall.safeReceiveOrNull(): T? =
     try {
         receive()
-    } catch (e:Exception) {
+    } catch (e: Exception) {
         null
     }
 
