@@ -1,7 +1,7 @@
 package pl.teamkiwi.authentication
 
 import io.ktor.http.HttpStatusCode
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import pl.teamkiwi.apiLogin
 import pl.teamkiwi.apiPostUser
@@ -24,7 +24,7 @@ class LogoutTest {
             val sessionId = apiLogin(loginRequest)
 
             with(apiRequestLogout(sessionId)) {
-                Assertions.assertEquals(HttpStatusCode.OK, response.status())
+                assertEquals(HttpStatusCode.OK, response.status())
             }
         }
     }
@@ -33,7 +33,7 @@ class LogoutTest {
     fun `logout without sessionId should return Unauthorized`() {
         withMyApplication {
             with(apiRequestLogout()) {
-                Assertions.assertEquals(HttpStatusCode.Unauthorized, response.status())
+                assertEquals(HttpStatusCode.Unauthorized, response.status())
             }
         }
     }
@@ -42,7 +42,7 @@ class LogoutTest {
     fun `logout with invalid sessionId should return Unauthorized`() {
         withMyApplication {
             with(apiRequestLogout("invalidSessionId")) {
-                Assertions.assertEquals(HttpStatusCode.Unauthorized, response.status())
+                assertEquals(HttpStatusCode.Unauthorized, response.status())
             }
         }
     }
