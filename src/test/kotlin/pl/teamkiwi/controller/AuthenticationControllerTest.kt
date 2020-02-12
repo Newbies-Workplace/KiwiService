@@ -83,7 +83,7 @@ class AuthenticationControllerTest {
             //given
             val userId = "b92a22b7-390b-44c9-ae0f-afa09bcdf86a"
             val testUser = createTestUser(id = userId)
-            val session = AuthSession("b92a22b7-390b-44c9-ae0f-afa09bcdf86a")
+            val session = AuthSession(userId)
 
             every { userService.findById(UUID.fromString(userId)) } returns testUser
 

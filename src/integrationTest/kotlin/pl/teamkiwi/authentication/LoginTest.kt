@@ -30,7 +30,7 @@ class LoginTest {
     }
 
     @Test
-    fun `invalid password login should return Unauthorized`() {
+    fun `login with invalid password should return Unauthorized`() {
         withMyApplication {
             val email = "validEmail@ok.ok"
             val validPassword = "validPassword"
