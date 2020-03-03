@@ -25,7 +25,6 @@ class Exposed {
             application.apply(configure)
             return Exposed()
         }
-
     }
 }
 

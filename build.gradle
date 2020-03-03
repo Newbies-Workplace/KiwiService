@@ -68,6 +68,7 @@ dependencies {
     //ktor core
     implementation "io.ktor:ktor-server-core:$ktor_version"
     implementation "io.ktor:ktor-server-netty:$ktor_version"
+    implementation "io.ktor:ktor-client-apache:$ktor_version"
 
     //auth
     implementation "io.ktor:ktor-auth:$ktor_version"

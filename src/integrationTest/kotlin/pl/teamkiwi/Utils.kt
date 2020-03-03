@@ -9,7 +9,6 @@ import io.ktor.server.testing.setBody
 import org.junit.jupiter.api.Assertions.*
 import pl.teamkiwi.controller.createTestUserCreateRequest
 import pl.teamkiwi.model.request.UserCreateRequest
-import pl.teamkiwi.model.request.UserLoginRequest
 
 fun TestApplicationEngine.apiPostUser(user: UserCreateRequest = createTestUserCreateRequest()) =
     with(apiRequestPostUser(user)) {
