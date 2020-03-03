@@ -31,7 +31,9 @@ class ServerAuthenticationProvider internal constructor(
                 authUrl, token ->
 
             runCatching {
-                val response = HttpClient(Apache).get<String>("$authUrl/v1/session") {
+                val sessionUrl = "$authUrl/v1/session"
+
+                val response = HttpClient(Apache).get<String>(sessionUrl) {
                     header(AUTHORIZATION_KEY, token)
                 }
 

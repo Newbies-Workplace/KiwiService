@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
 import pl.teamkiwi.converter.toUserResponse
+import pl.teamkiwi.exception.AccountAlreadyExistsException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
@@ -21,7 +22,48 @@ internal class UserControllerTest {
     private val userController = UserController(userService)
 
     @Nested
-    inner class GetUser{
+    inner class PostUser {
+
+        @Test
+        fun `should create user when valid data passed`() {
+            //given
+            val id = UUID.randomUUID()
+            val idString = id.toString()
+            val userCreateRequest = createTestUserCreateRequest()
+
+            val testUser = createTestUser(
+                idString,
+                userCreateRequest.username,
+                userCreateRequest.description)
+
+            every { userService.findById(id) } returns null
+            every { userService.save(id, any()) } returns testUser
+
+            //when
+            val foundUser = userController.createUser(idString, userCreateRequest)
+
+            //then
+            assertEquals(testUser.toUserResponse(), foundUser)
+        }
+
+        @Test
+        fun `should throw AccountAlreadyExistsException when user with same id exists`() {
+            //given
+            val id = UUID.randomUUID()
+            val idString = id.toString()
+            val userCreateRequest = createTestUserCreateRequest()
+
+            every { userService.findById(id) } returns mockk()
+
+            //when
+            assertThrows<AccountAlreadyExistsException> {
+                userController.createUser(idString, userCreateRequest)
+            }
+        }
+    }
+
+    @Nested
+    inner class GetUser {
 
         @Test
         fun `should return user when found with specified id`() {

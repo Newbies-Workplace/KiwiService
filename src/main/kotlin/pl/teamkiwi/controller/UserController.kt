@@ -16,9 +16,10 @@ class UserController (
 
     fun createUser(userId: String, userCreateRequest: UserCreateRequest): UserResponse {
         val id = UUID.fromString(userId)
-        val userCreateDTO = userCreateRequest.toUserCreateDTO(id)
 
         if (userService.findById(id) != null) throw AccountAlreadyExistsException()
+
+        val userCreateDTO = userCreateRequest.toUserCreateDTO(id)
 
         return userService.save(id, userCreateDTO).toUserResponse()
     }

@@ -34,7 +34,6 @@ fun main(args: Array<String>) {
     ).start()
 }
 
-@Suppress("unused") // Referenced in application.conf
 fun Application.mainModule() {
     install(Koin) {
         logger(PrintLogger())
