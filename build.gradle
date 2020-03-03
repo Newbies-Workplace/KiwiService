@@ -17,28 +17,6 @@ group 'pl.kiwiteam'
 version '0.0.1'
 mainClassName = "io.ktor.server.netty.EngineMain"
 
-sourceSets {
-    integrationTest {
-        kotlin.srcDir "$projectDir/src/integrationTest/kotlin"
-        resources.srcDir "$projectDir/src/integrationTest/resources"
-        compileClasspath += main.output + test.output
-        runtimeClasspath += main.output + test.output
-    }
-}
-
-configurations {
-    integrationTestImplementation.extendsFrom testImplementation
-    integrationTestRuntime.extendsFrom testRuntime
-}
-
-task integrationTest(type: Test) {
-    useJUnitPlatform()
-
-    testClassesDirs = sourceSets.integrationTest.output.classesDirs
-    classpath = sourceSets.integrationTest.runtimeClasspath
-}
-check.dependsOn integrationTest
-
 shadowJar {
     manifest {
         attributes 'Main-Class': mainClassName
@@ -96,10 +74,4 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:$junit_version"
 
     testImplementation "io.mockk:mockk:$mockk_version"
-
-    //integrationTest
-    testImplementation "io.ktor:ktor-server-tests:$ktor_version"
-    testImplementation "io.ktor:ktor-server-test-host:$ktor_version"
-
-    testRuntimeOnly "com.h2database:h2:$h2_version"
 }

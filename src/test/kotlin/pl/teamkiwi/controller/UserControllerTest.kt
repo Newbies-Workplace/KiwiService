@@ -2,6 +2,7 @@ package pl.teamkiwi.controller
 
 import io.mockk.every
 import io.mockk.mockk
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -13,7 +14,6 @@ import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.service.UserService
 import java.util.*
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class UserControllerTest {
