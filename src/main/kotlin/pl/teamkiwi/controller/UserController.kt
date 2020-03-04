@@ -1,8 +1,8 @@
 package pl.teamkiwi.controller
 
-import pl.teamkiwi.converter.UserConverter
+import pl.teamkiwi.converter.toUserCreateDTO
 import pl.teamkiwi.converter.toUserResponse
-import pl.teamkiwi.exception.EmailOccupiedException
+import pl.teamkiwi.exception.AccountAlreadyExistsException
 import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.request.UserCreateRequest
@@ -11,18 +11,17 @@ import pl.teamkiwi.service.UserService
 import java.util.*
 
 class UserController (
-    private val userService: UserService,
-    private val userConverter: UserConverter
+    private val userService: UserService
 ) {
 
-    fun createUser(userCreateRequest: UserCreateRequest): UserResponse {
-        if (userService.findByEmail(userCreateRequest.email) != null) {
-            throw EmailOccupiedException()
-        }
+    fun createUser(userId: String, userCreateRequest: UserCreateRequest): UserResponse {
+        val id = UUID.fromString(userId)
 
-        val userCreateDTO = with(userConverter) { userCreateRequest.toUserCreateDTO() }
+        if (userService.findById(id) != null) throw AccountAlreadyExistsException()
 
-        return userService.save(userCreateDTO).toUserResponse()
+        val userCreateDTO = userCreateRequest.toUserCreateDTO(id)
+
+        return userService.save(id, userCreateDTO).toUserResponse()
     }
 
     fun getUserById(id: UUID): UserResponse {

@@ -2,65 +2,68 @@ package pl.teamkiwi.controller
 
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import pl.teamkiwi.converter.UserConverter
 import pl.teamkiwi.converter.toUserResponse
-import pl.teamkiwi.exception.EmailOccupiedException
+import pl.teamkiwi.exception.AccountAlreadyExistsException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.service.UserService
 import java.util.*
-import kotlin.test.assertEquals
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class UserControllerTest {
 
     private val userService = mockk<UserService>()
-    private val userConverter = mockk<UserConverter>(relaxed = true)
-    private val userController = UserController(userService, userConverter)
+    private val userController = UserController(userService)
 
     @Nested
-    inner class CreateUser {
+    inner class PostUser {
 
         @Test
-        fun `should not create user if email is occupied`() {
+        fun `should create user when valid data passed`() {
             //given
-            val validEmail = "email@co.ok"
-            val validUser = createTestUser(email = validEmail)
-            val userCreateRequest = createTestUserCreateRequest(email = validEmail)
+            val id = UUID.randomUUID()
+            val idString = id.toString()
+            val userCreateRequest = createTestUserCreateRequest()
 
-            every { userService.findByEmail(validEmail) } returns validUser
+            val testUser = createTestUser(
+                idString,
+                userCreateRequest.username,
+                userCreateRequest.description)
+
+            every { userService.findById(id) } returns null
+            every { userService.save(id, any()) } returns testUser
 
             //when
-            assertThrows<EmailOccupiedException> {
-                userController.createUser(userCreateRequest)
-            }
+            val foundUser = userController.createUser(idString, userCreateRequest)
+
+            //then
+            assertEquals(testUser.toUserResponse(), foundUser)
         }
 
         @Test
-        fun `should save user when email is free`() {
+        fun `should throw AccountAlreadyExistsException when user with same id exists`() {
             //given
+            val id = UUID.randomUUID()
+            val idString = id.toString()
             val userCreateRequest = createTestUserCreateRequest()
-            val validUser = createTestUser()
 
-            every { userService.save(any()) } returns validUser
-            every { userService.findByEmail(any()) } returns null
+            every { userService.findById(id) } returns mockk()
 
             //when
-            userController.createUser(userCreateRequest)
-
-            //then
-            verify(exactly = 1) { userService.save(with(userConverter) {userCreateRequest.toUserCreateDTO()}) }
+            assertThrows<AccountAlreadyExistsException> {
+                userController.createUser(idString, userCreateRequest)
+            }
         }
     }
 
     @Nested
-    inner class GetUser{
+    inner class GetUser {
 
         @Test
         fun `should return user when found with specified id`() {
@@ -95,21 +98,17 @@ internal class UserControllerTest {
 
 fun createTestUserCreateRequest(
     email: String = "email@co.pl",
-    username: String = "UserName",
-    description: String? = null,
-    password: String = "ahbsiboa"
+    username: String = "UserName"
 ) = UserCreateRequest(
-    email, username, description, password
+    email, username
 )
 
 fun createTestUser(
     id: String = "67b44030-4448-11ea-b77f-2e728ce88125",
-    email: String = "email@co.pl",
     username: String = "UserName",
     description: String? = null,
-    passwordHash: String = "ahbsiboa",
     avatarPath: String? = null,
     creationDate: Date = Date()
 ) = UserDTO(
-    id, email, username, description, avatarPath, passwordHash, creationDate
+    id, username, description, avatarPath, creationDate
 )
