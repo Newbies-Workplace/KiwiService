@@ -6,7 +6,6 @@ import io.ktor.util.AttributeKey
 import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
-import pl.teamkiwi.repository.table.Albums
 import pl.teamkiwi.repository.table.Songs
 import pl.teamkiwi.repository.table.Users
 
@@ -48,7 +47,6 @@ class ExposedConfiguration private constructor() {
         transaction {
             SchemaUtils.create(
                 Users,
-                Albums,
                 Songs
             )
         }

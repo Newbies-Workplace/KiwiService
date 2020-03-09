@@ -34,6 +34,7 @@ fun main(args: Array<String>) {
     ).start()
 }
 
+@Suppress("unused") // Referenced in application.conf
 fun Application.mainModule() {
     install(Koin) {
         logger(PrintLogger())
@@ -72,6 +73,8 @@ fun Application.mainModule() {
         exception<AccountAlreadyExistsException> { call.respond(HttpStatusCode.Conflict) }
         exception<NoContentException> { call.respond(HttpStatusCode.NoContent) }
         exception<UnauthorizedException> { call.respond(HttpStatusCode.Unauthorized) }
+        exception<UnsupportedExtensionException> { call.respond(HttpStatusCode.UnsupportedMediaType) }
+        exception<FileSaveException> { call.respond(HttpStatusCode.InternalServerError) }
     }
 
     routing {

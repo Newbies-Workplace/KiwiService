@@ -6,11 +6,13 @@ data class SongDTO(
     override val id: String,
     override val title: String,
     override val imagePath: String?,
-    override val artist: String?,
     override val artistId: String,
-    override val composeDate: Date?,
-    val uploadDate: Date,
     val path: String,
-    val albumId: String?,
-    val duration: Long
-): MediaItemDTO(id, title, imagePath, artistId, artist, composeDate)
+    val duration: Long,
+    val uploadDate: Date
+) : MediaItemDTO(
+    id = id,
+    title = title,
+    artistId = artistId,
+    imagePath = imagePath
+)
