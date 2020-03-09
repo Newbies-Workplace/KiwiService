@@ -23,6 +23,8 @@ fun Scope.getProp(key: String) =
     get<ApplicationConfig>()
         .getStringProperty(key)
 
+fun Scope.getPropList(key: String): List<String> = get<ApplicationConfig>().property(key).getList()
+
 private fun ApplicationConfig.getStringPropertyOrNull(key: String) =
     propertyOrNull(key)?.getString()
 
