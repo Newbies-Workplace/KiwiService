@@ -20,10 +20,12 @@ import org.koin.core.logger.PrintLogger
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.slf4j.event.Level
+import pl.jutupe.Exposed
 import pl.teamkiwi.auth.server
 import pl.teamkiwi.di.module
 import pl.teamkiwi.exception.*
-import pl.teamkiwi.repository.Exposed
+import pl.teamkiwi.repository.table.Songs
+import pl.teamkiwi.repository.table.Users
 import pl.teamkiwi.router.songRoutes
 import pl.teamkiwi.router.userRoutes
 import pl.teamkiwi.util.getProp
@@ -51,7 +53,11 @@ fun Application.mainModule() {
 
     install(Exposed) {
         connectWithConfig(get())
-        createSchemas()
+
+        createSchemas(
+            Users,
+            Songs
+        )
     }
 
     install(CORS) {
