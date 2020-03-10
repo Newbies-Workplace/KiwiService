@@ -5,8 +5,6 @@ import io.ktor.auth.authentication
 import io.ktor.request.receive
 import pl.teamkiwi.auth.AuthPrincipal
 import pl.teamkiwi.exception.BadRequestException
-import pl.teamkiwi.exception.InvalidUUIDException
-import java.util.*
 
 suspend inline fun <reified T : Any> ApplicationCall.safeReceive(): T? =
     try {
@@ -27,12 +25,8 @@ suspend inline fun <reified T : Any> ApplicationCall.myReceive(
         throw exception
     }
 
-fun ApplicationCall.idParameter(): UUID =
-    try {
-        UUID.fromString(parameters["id"])
-    } catch (e: Throwable) {
-        throw InvalidUUIDException()
-    }
+fun ApplicationCall.idParameter(): String =
+        parameters["id"] ?: throw BadRequestException()
 
 fun ApplicationCall.authPrincipal(): AuthPrincipal? =
     authentication.principal()

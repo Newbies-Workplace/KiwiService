@@ -8,7 +8,6 @@ import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.request.SongCreateRequest
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
-import java.util.*
 
 class SongController(
     private val songService: SongService,
@@ -45,7 +44,7 @@ class SongController(
         }
     }
 
-    fun getSongById(id: UUID): SongDTO =
+    fun getSongById(id: String): SongDTO =
         songService.findById(id) ?: throw NotFoundException()
 
     fun getAllSongs(): List<SongDTO> {

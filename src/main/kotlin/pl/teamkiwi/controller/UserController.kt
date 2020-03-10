@@ -8,23 +8,20 @@ import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.service.UserService
-import java.util.*
 
 class UserController (
     private val userService: UserService
 ) {
 
     fun createUser(userId: String, userCreateRequest: UserCreateRequest): UserResponse {
-        val id = UUID.fromString(userId)
+        if (userService.findById(userId) != null) throw AccountAlreadyExistsException()
 
-        if (userService.findById(id) != null) throw AccountAlreadyExistsException()
+        val userCreateDTO = userCreateRequest.toUserCreateDTO(userId)
 
-        val userCreateDTO = userCreateRequest.toUserCreateDTO(id)
-
-        return userService.save(id, userCreateDTO).toUserResponse()
+        return userService.save(userId, userCreateDTO).toUserResponse()
     }
 
-    fun getUserById(id: UUID): UserResponse {
+    fun getUserById(id: String): UserResponse {
         return userService.findById(id)?.toUserResponse() ?: throw NotFoundException()
     }
 

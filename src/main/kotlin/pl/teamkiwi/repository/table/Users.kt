@@ -1,15 +1,15 @@
 package pl.teamkiwi.repository.table
 
-import org.jetbrains.exposed.dao.UUIDTable
 import org.joda.time.DateTime
+import pl.teamkiwi.repository.table.Constants.DEFAULT_CHARSET
 
 /**
  * Database table
  */
-object Users : UUIDTable() {
-    val username = varchar("username", USERNAME_MAX_LENGTH)
-    val description = varchar("description", DESCRIPTION_MAX_LENGTH).nullable()
-    val avatarPath = varchar("avatarPath", 150).nullable()
+object Users : StringIdTable() {
+    val username = varchar("username", USERNAME_MAX_LENGTH, DEFAULT_CHARSET)
+    val description = varchar("description", DESCRIPTION_MAX_LENGTH, DEFAULT_CHARSET).nullable()
+    val avatarPath = varchar("avatarPath", 150, DEFAULT_CHARSET).nullable()
     val creationDate = datetime("creationDate").default(DateTime.now())
 }
 

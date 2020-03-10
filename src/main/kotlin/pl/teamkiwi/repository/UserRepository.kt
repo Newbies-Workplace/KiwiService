@@ -5,11 +5,10 @@ import pl.teamkiwi.converter.toUserDTO
 import pl.teamkiwi.model.dto.UserDTO
 import pl.teamkiwi.model.dto.create.UserCreateDTO
 import pl.teamkiwi.repository.dao.UserDAO
-import java.util.*
 
 class UserRepository {
 
-    fun save(id: UUID, user: UserCreateDTO): UserDTO =
+    fun save(id: String, user: UserCreateDTO): UserDTO =
         transaction {
             UserDAO.new(id) {
                 username = user.username
@@ -19,7 +18,7 @@ class UserRepository {
             }.toUserDTO()
         }
 
-    fun findById(id: UUID): UserDTO? =
+    fun findById(id: String): UserDTO? =
         transaction {
             UserDAO.findById(id)
                 ?.toUserDTO()

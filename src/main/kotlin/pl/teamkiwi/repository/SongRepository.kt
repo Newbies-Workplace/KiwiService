@@ -5,7 +5,6 @@ import pl.teamkiwi.converter.toSongDTO
 import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.dto.create.SongCreateDTO
 import pl.teamkiwi.repository.dao.SongDAO
-import java.util.*
 
 class SongRepository {
 
@@ -21,7 +20,7 @@ class SongRepository {
             }.toSongDTO()
         }
 
-    fun findById(id: UUID): SongDTO? =
+    fun findById(id: String): SongDTO? =
         transaction {
             SongDAO.findById(id)?.toSongDTO()
         }
