@@ -50,7 +50,6 @@ dependencies {
 
     //auth
     implementation "io.ktor:ktor-auth:$ktor_version"
-    implementation "io.ktor:ktor-auth-jwt:$ktor_version"
 
     //security
     implementation "at.favre.lib:bcrypt:$bcrypt_version"

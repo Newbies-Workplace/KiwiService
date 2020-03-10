@@ -1,13 +1,12 @@
 package pl.teamkiwi.repository.dao
 
 import org.jetbrains.exposed.dao.EntityID
-import org.jetbrains.exposed.dao.UUIDEntity
-import org.jetbrains.exposed.dao.UUIDEntityClass
 import pl.teamkiwi.repository.table.Songs
-import java.util.*
+import pl.teamkiwi.repository.table.StringIdEntity
+import pl.teamkiwi.repository.table.StringIdEntityClass
 
-class SongDAO(id: EntityID<UUID>) : UUIDEntity(id) {
-    companion object : UUIDEntityClass<SongDAO>(Songs)
+class SongDAO(id: EntityID<String>) : StringIdEntity(id) {
+    companion object : StringIdEntityClass<SongDAO>(Songs)
 
     var title by Songs.title
     var path by Songs.path

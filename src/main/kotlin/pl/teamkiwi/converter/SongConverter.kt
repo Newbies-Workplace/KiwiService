@@ -9,7 +9,7 @@ import java.util.*
 
 fun SongDAO.toSongDTO() =
     SongDTO(
-        id = id.toString(),
+        id = id.value,
         title = title,
         path = path,
         imagePath = imagePath,

@@ -14,7 +14,6 @@ import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.request.SongCreateRequest
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
-import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 internal class SongControllerTest {
@@ -80,7 +79,7 @@ internal class SongControllerTest {
         @Test
         fun `should throw NotFoundException when there is no song with specific id`() {
             //given
-            val id = mockk<UUID>()
+            val id = "validId"
             every { songService.findById(id) } returns null
 
             //when
@@ -92,7 +91,7 @@ internal class SongControllerTest {
         @Test
         fun `should return song response when valid id passed`() {
             //given
-            val id = mockk<UUID>()
+            val id = "validId"
             val songDTO = mockk<SongDTO>()
             every { songService.findById(id) } returns songDTO
 

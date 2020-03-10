@@ -6,11 +6,10 @@ import pl.teamkiwi.model.dto.create.UserCreateDTO
 import pl.teamkiwi.model.request.UserCreateRequest
 import pl.teamkiwi.model.response.UserResponse
 import pl.teamkiwi.repository.dao.UserDAO
-import java.util.*
 
 fun UserDAO.toUserDTO() =
     UserDTO(
-        id = id.toString(),
+        id = id.value,
         username = username,
         description = description,
         avatarPath = avatarPath,
@@ -26,7 +25,7 @@ fun UserDTO.toUserResponse() =
         creationDate = creationDate
     )
 
-fun UserCreateRequest.toUserCreateDTO(id: UUID) =
+fun UserCreateRequest.toUserCreateDTO(id: String) =
     UserCreateDTO(
         id = id,
         username = username,

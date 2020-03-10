@@ -27,12 +27,11 @@ internal class UserControllerTest {
         @Test
         fun `should create user when valid data passed`() {
             //given
-            val id = UUID.randomUUID()
-            val idString = id.toString()
+            val id = "validId"
             val userCreateRequest = createTestUserCreateRequest()
 
             val testUser = createTestUser(
-                idString,
+                id,
                 userCreateRequest.username,
                 userCreateRequest.description)
 
@@ -40,7 +39,7 @@ internal class UserControllerTest {
             every { userService.save(id, any()) } returns testUser
 
             //when
-            val foundUser = userController.createUser(idString, userCreateRequest)
+            val foundUser = userController.createUser(id, userCreateRequest)
 
             //then
             assertEquals(testUser.toUserResponse(), foundUser)
@@ -49,15 +48,14 @@ internal class UserControllerTest {
         @Test
         fun `should throw AccountAlreadyExistsException when user with same id exists`() {
             //given
-            val id = UUID.randomUUID()
-            val idString = id.toString()
+            val id = "validId"
             val userCreateRequest = createTestUserCreateRequest()
 
             every { userService.findById(id) } returns mockk()
 
             //when
             assertThrows<AccountAlreadyExistsException> {
-                userController.createUser(idString, userCreateRequest)
+                userController.createUser(id, userCreateRequest)
             }
         }
     }
@@ -69,12 +67,12 @@ internal class UserControllerTest {
         fun `should return user when found with specified id`() {
             //given
             val validUserResponse = createTestUser()
-            val validId = mockk<UUID>()
+            val id = "validId"
 
-            every { userService.findById(validId) } returns validUserResponse
+            every { userService.findById(id) } returns validUserResponse
 
             //when
-            val foundUser = userController.getUserById(validId)
+            val foundUser = userController.getUserById(id)
 
             //then
             assertEquals(validUserResponse.toUserResponse(), foundUser)
@@ -83,7 +81,7 @@ internal class UserControllerTest {
         @Test
         fun `should throw NotFoundException when id doesn't match`(){
             //given
-            val validId = mockk<UUID>()
+            val validId = "validId"
 
             //when
             every { userService.findById(validId) } returns null
