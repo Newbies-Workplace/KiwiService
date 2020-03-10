@@ -16,4 +16,7 @@ class SongService(
 
     fun findAll(): List<SongDTO> =
         songRepository.findAll()
+
+    fun deleteById(id: String) =
+        songRepository.delete(id)
 }

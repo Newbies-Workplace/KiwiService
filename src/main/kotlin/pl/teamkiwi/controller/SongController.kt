@@ -2,6 +2,7 @@ package pl.teamkiwi.controller
 
 import io.ktor.http.content.PartData
 import pl.teamkiwi.converter.toSongCreateDTO
+import pl.teamkiwi.exception.ForbiddenException
 import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.SongDTO
@@ -55,5 +56,18 @@ class SongController(
         }
 
         return songs
+    }
+
+    fun deleteSong(id: String, userId: String) {
+        val song = songService.findById(id) ?: throw NotFoundException()
+
+        if (userId != song.artistId) {
+            throw ForbiddenException()
+        }
+
+        fileService.deleteFile(song.path)
+        song.imagePath?.let { fileService.deleteFile(it) }
+
+        songService.deleteById(id)
     }
 }
