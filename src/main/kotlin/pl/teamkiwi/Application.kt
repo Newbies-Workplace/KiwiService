@@ -8,6 +8,7 @@ import io.ktor.features.CORS
 import io.ktor.features.CallLogging
 import io.ktor.features.ContentNegotiation
 import io.ktor.features.StatusPages
+import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.jackson.jackson
 import io.ktor.response.respond
@@ -55,6 +56,9 @@ fun Application.mainModule() {
 
     install(CORS) {
         anyHost()
+
+        method(HttpMethod.Delete)
+        method(HttpMethod.Put)
     }
 
     install(Authentication) {
@@ -75,6 +79,7 @@ fun Application.mainModule() {
         exception<UnauthorizedException> { call.respond(HttpStatusCode.Unauthorized) }
         exception<UnsupportedExtensionException> { call.respond(HttpStatusCode.UnsupportedMediaType) }
         exception<FileSaveException> { call.respond(HttpStatusCode.InternalServerError) }
+        exception<ForbiddenException> { call.respond(HttpStatusCode.Forbidden) }
     }
 
     routing {

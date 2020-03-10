@@ -6,6 +6,7 @@ import io.ktor.http.content.forEachPart
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
 import io.ktor.routing.Routing
+import io.ktor.routing.delete
 import io.ktor.routing.get
 import io.ktor.routing.post
 import org.koin.ktor.ext.inject
@@ -50,6 +51,15 @@ fun Routing.songRoutes() {
 
         get("v1/songs") {
             call.respond(songController.getAllSongs())
+        }
+
+        delete("v1/song/{id}") {
+            val id = call.idParameter()
+            val userId = call.authPrincipal()?.userId ?: throw UnauthorizedException()
+
+            songController.deleteSong(id, userId)
+
+            call.respond("")
         }
     }
 }

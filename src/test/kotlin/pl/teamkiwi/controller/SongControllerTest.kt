@@ -8,12 +8,14 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
+import pl.teamkiwi.exception.ForbiddenException
 import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.request.SongCreateRequest
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 internal class SongControllerTest {
@@ -117,4 +119,57 @@ internal class SongControllerTest {
             }
         }
     }
+
+    @Nested
+    inner class DeleteSong {
+
+        @Test
+        fun `should throw NotFoundException when there is no song with specific id`() {
+            //given
+            val userId = "userId"
+            val songId = "songId"
+
+            every { songService.findById(songId) } returns null
+
+            //when
+            assertThrows<NotFoundException> {
+                songController.deleteSong(songId, userId)
+            }
+        }
+
+        @Test
+        fun `should throw ForbiddenException when another user wants to delete not his song`() {
+            //given
+            val firstUserId = "firstUserId"
+            val secondUserId = "secondUserId"
+            val songId = "songId"
+            val song = createTestSong(id = songId, artistId = firstUserId)
+
+            every { songService.findById(songId) } returns song
+
+            //when
+            assertThrows<ForbiddenException> {
+                songController.deleteSong(songId, secondUserId)
+            }
+        }
+    }
 }
+
+fun createTestSong(
+    id: String = "songId",
+    title: String = "SongTitle",
+    imagePath: String? = null,
+    artistId: String = "artistRandomId",
+    path: String = "path/song.mp3",
+    duration: Long = 100L,
+    uploadDate: Date = Date()
+) =
+    SongDTO(
+        id = id,
+        title = title,
+        imagePath = imagePath,
+        artistId = artistId,
+        path = path,
+        duration = duration,
+        uploadDate = uploadDate
+    )

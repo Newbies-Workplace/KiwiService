@@ -44,7 +44,7 @@ class FileService(
                 }
 
             //todo return proper url
-            return file.toURI().toString()
+            return file.absolutePath
         }.getOrElse {
             throw FileSaveException()
         }

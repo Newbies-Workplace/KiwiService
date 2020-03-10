@@ -1,10 +1,12 @@
 package pl.teamkiwi.repository
 
+import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import pl.teamkiwi.converter.toSongDTO
 import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.dto.create.SongCreateDTO
 import pl.teamkiwi.repository.dao.SongDAO
+import pl.teamkiwi.repository.table.Songs
 
 class SongRepository {
 
@@ -30,4 +32,10 @@ class SongRepository {
             SongDAO.all()
                 .map { it.toSongDTO() }
         }
+
+    fun delete(id: String) {
+        transaction {
+            Songs.deleteWhere { Songs.id eq id }
+        }
+    }
 }
