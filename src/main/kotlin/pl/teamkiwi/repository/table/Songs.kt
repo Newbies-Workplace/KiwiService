@@ -13,7 +13,7 @@ object Songs : StringIdTable() {
     val title = varchar("title", TITLE_MAX_LENGTH, DEFAULT_CHARSET)
     val path = varchar("path", PATH_MAX_LENGTH, DEFAULT_CHARSET)
     val imagePath = varchar("imagePath", IMAGE_PATH_MAX_LENGTH, DEFAULT_CHARSET).nullable()
-    val artistId = uuid("artistId")
+    val artistId = varchar("artistId", STRING_UUID_LENGTH, DEFAULT_CHARSET)
     val duration = long("duration")
     val uploadDate = datetime("uploadDate").default(DateTime.now())
 }
