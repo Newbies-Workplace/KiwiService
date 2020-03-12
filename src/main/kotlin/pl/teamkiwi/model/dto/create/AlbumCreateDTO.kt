@@ -2,11 +2,9 @@ package pl.teamkiwi.model.dto.create
 
 import org.joda.time.DateTime
 
-data class SongCreateDTO(
+data class AlbumCreateDTO(
     val title: String,
-    val path: String,
-    val imagePath: String?,
     val artistId: String,
-    val duration: Long,
+    val imagePath: String?,
     val uploadDate: DateTime
 )

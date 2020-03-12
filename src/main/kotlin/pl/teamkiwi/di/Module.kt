@@ -5,10 +5,13 @@ import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
 import org.koin.dsl.module
 import pl.jutupe.DatabaseConfiguration
+import pl.teamkiwi.controller.AlbumController
 import pl.teamkiwi.controller.SongController
 import pl.teamkiwi.controller.UserController
+import pl.teamkiwi.repository.AlbumRepository
 import pl.teamkiwi.repository.SongRepository
 import pl.teamkiwi.repository.UserRepository
+import pl.teamkiwi.service.AlbumService
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
 import pl.teamkiwi.service.UserService
@@ -26,6 +29,10 @@ val module = module {
     single { SongController(get(), get()) }
     single { SongService(get()) }
     single { SongRepository() }
+
+    single { AlbumController(get(), get()) }
+    single { AlbumService(get()) }
+    single { AlbumRepository() }
 
     single { DatabaseConfiguration(
         url = getProp("kiwi.database.url"),

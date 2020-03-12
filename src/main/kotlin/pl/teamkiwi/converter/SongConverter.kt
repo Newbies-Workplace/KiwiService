@@ -5,7 +5,6 @@ import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.dto.create.SongCreateDTO
 import pl.teamkiwi.model.request.SongCreateRequest
 import pl.teamkiwi.repository.dao.SongDAO
-import java.util.*
 
 fun SongDAO.toSongDTO() =
     SongDTO(
@@ -13,7 +12,7 @@ fun SongDAO.toSongDTO() =
         title = title,
         path = path,
         imagePath = imagePath,
-        artistId = artistId.toString(),
+        artistId = artistId,
         duration = duration,
         uploadDate = uploadDate.toDate()
     )
@@ -27,7 +26,7 @@ fun SongDAO.toSongDTO() =
         title = title,
         path = path,
         imagePath = imagePath,
-        artistId = UUID.fromString(artistId),
+        artistId = artistId,
         duration = duration,
         uploadDate = DateTime.now()
     )

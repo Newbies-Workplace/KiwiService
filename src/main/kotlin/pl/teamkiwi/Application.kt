@@ -24,8 +24,10 @@ import pl.jutupe.Exposed
 import pl.teamkiwi.auth.server
 import pl.teamkiwi.di.module
 import pl.teamkiwi.exception.*
+import pl.teamkiwi.repository.table.Albums
 import pl.teamkiwi.repository.table.Songs
 import pl.teamkiwi.repository.table.Users
+import pl.teamkiwi.router.albumRoutes
 import pl.teamkiwi.router.songRoutes
 import pl.teamkiwi.router.userRoutes
 import pl.teamkiwi.util.getProp
@@ -56,7 +58,8 @@ fun Application.mainModule() {
 
         createSchemas(
             Users,
-            Songs
+            Songs,
+            Albums
         )
     }
 
@@ -91,5 +94,6 @@ fun Application.mainModule() {
     routing {
         userRoutes()
         songRoutes()
+        albumRoutes()
     }
 }
