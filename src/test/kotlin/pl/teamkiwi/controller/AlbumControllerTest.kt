@@ -3,11 +3,17 @@ package pl.teamkiwi.controller
 import io.ktor.http.content.PartData
 import io.mockk.*
 import kotlinx.coroutines.runBlocking
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Nested
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
+import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.AlbumDTO
 import pl.teamkiwi.model.request.AlbumCreateRequest
 import pl.teamkiwi.service.AlbumService
 import pl.teamkiwi.service.FileService
+import java.util.*
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class AlbumControllerTest {
@@ -60,8 +66,53 @@ class AlbumControllerTest {
             }
 
             //then
-            Assertions.assertEquals(albumDTO, song)
+            assertEquals(albumDTO, song)
             verify(exactly = 0) { fileService.deleteFile(any()) }
         }
     }
+
+    @Nested
+    inner class GetAlbum {
+
+        @Test
+        fun `should throw NotFoundException when there is no album with specific id`() {
+            //given
+            val albumId = "albumId"
+            every { albumService.findById(albumId) } returns null
+
+            //when
+            assertThrows<NotFoundException> {
+                albumController.getAlbumById(albumId)
+            }
+        }
+
+        @Test
+        fun `should return album when found with specified id`() {
+            //given
+            val albumId = "albumId"
+            val albumDTO = createTestAlbum(albumId)
+            every { albumService.findById(albumId) } returns albumDTO
+
+            //when
+            val response = albumController.getAlbumById(albumId)
+
+            //then
+            assertEquals(albumDTO, response)
+        }
+    }
 }
+
+fun createTestAlbum(
+    id: String = "songId",
+    title: String = "SongTitle",
+    imagePath: String? = null,
+    artistId: String = "artistRandomId",
+    uploadDate: Date = Date()
+) =
+    AlbumDTO(
+        id = id,
+        title = title,
+        artistId = artistId,
+        imagePath = imagePath,
+        uploadDate = uploadDate
+    )

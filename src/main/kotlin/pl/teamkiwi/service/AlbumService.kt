@@ -10,4 +10,10 @@ class AlbumService(
 
     fun save(albumCreateDTO: AlbumCreateDTO): AlbumDTO =
         albumRepository.save(albumCreateDTO)
+
+    fun findById(id: String): AlbumDTO? =
+        albumRepository.findById(id)
+
+    fun findAll(): List<AlbumDTO> =
+        albumRepository.findAll()
 }

@@ -6,7 +6,9 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.forEachPart
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
-import io.ktor.routing.*
+import io.ktor.routing.Routing
+import io.ktor.routing.get
+import io.ktor.routing.post
 import org.koin.ktor.ext.inject
 import pl.teamkiwi.controller.AlbumController
 import pl.teamkiwi.exception.BadRequestException
@@ -39,14 +41,18 @@ fun Routing.albumRoutes() {
         }
 
         get("v1/album/{id}") {
+            val id = call.idParameter()
 
+            val response = albumController.getAlbumById(id)
+
+            call.respond(response)
         }
 
         get("v1/albums") {
-
+            call.respond(albumController.getAllAlbums())
         }
 
-        delete("v1/album/{id}") {
+        /*delete("v1/album/{id}") {
 
         }
 
@@ -56,6 +62,6 @@ fun Routing.albumRoutes() {
 
         delete("v1/album/{id}/song") {
 
-        }
+        }*/
     }
 }

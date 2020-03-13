@@ -17,4 +17,15 @@ class AlbumRepository {
                 uploadDate = album.uploadDate
             }.toAlbumDTO()
         }
+
+    fun findById(id: String): AlbumDTO? =
+        transaction {
+            AlbumDAO.findById(id)?.toAlbumDTO()
+        }
+
+    fun findAll(): List<AlbumDTO> =
+        transaction {
+            AlbumDAO.all()
+                .map { it.toAlbumDTO() }
+        }
 }

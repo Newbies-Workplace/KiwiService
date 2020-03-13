@@ -2,6 +2,8 @@ package pl.teamkiwi.controller
 
 import io.ktor.http.content.PartData
 import pl.teamkiwi.converter.toAlbumCreateDTO
+import pl.teamkiwi.exception.NoContentException
+import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.AlbumDTO
 import pl.teamkiwi.model.request.AlbumCreateRequest
 import pl.teamkiwi.service.AlbumService
@@ -33,5 +35,18 @@ class AlbumController(
 
             throw exception
         }
+    }
+
+    fun getAlbumById(id: String): AlbumDTO =
+        albumService.findById(id) ?: throw NotFoundException()
+
+    fun getAllAlbums(): List<AlbumDTO> {
+        val albums = albumService.findAll()
+
+        if (albums.isEmpty()) {
+            throw NoContentException()
+        }
+
+        return albums
     }
 }
