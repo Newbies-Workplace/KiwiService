@@ -6,9 +6,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.forEachPart
 import io.ktor.request.receiveMultipart
 import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
+import io.ktor.routing.*
 import org.koin.ktor.ext.inject
 import pl.teamkiwi.controller.AlbumController
 import pl.teamkiwi.exception.BadRequestException
@@ -53,15 +51,26 @@ fun Routing.albumRoutes() {
         }
 
         /*delete("v1/album/{id}") {
-
-        }
-
-        put("v1/album/{id}/song") {
-
-        }
-
-        delete("v1/album/{id}/song") {
-
         }*/
+
+        put("v1/album/{id}/songs") {
+            val id = call.idParameter()
+            val userId = call.authPrincipal()?.userId ?: throw UnauthorizedException()
+            val songIds = call.myReceive<List<String>>()
+
+            albumController.addSongs(id, songIds, userId)
+
+            call.respond("")
+        }
+
+        delete("v1/album/{id}/songs") {
+            val id = call.idParameter()
+            val userId = call.authPrincipal()?.userId ?: throw UnauthorizedException()
+            val songIds = call.myReceive<List<String>>()
+
+            albumController.removeSongs(id, songIds, userId)
+
+            call.respond("")
+        }
     }
 }

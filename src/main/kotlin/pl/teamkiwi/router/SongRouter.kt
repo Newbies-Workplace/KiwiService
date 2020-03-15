@@ -22,18 +22,17 @@ fun Routing.songRoutes() {
     authenticate {
         post("v1/song") {
             val multipart = call.receiveMultipart()
-
             val partDataMap = runCatching { multipart.toMap() }
                     .getOrElse { throw BadRequestException() }
-
             val songRequestForm = partDataMap.getRequestOrNull() ?: throw BadRequestException()
 
             val songRequest = deserializeOrNull<SongCreateRequest>(songRequestForm.value) ?: throw BadRequestException()
             val song = partDataMap.getSongOrNull() ?: throw BadRequestException()
             val image = partDataMap.getImageOrNull()
             val userId = call.authPrincipal()?.userId ?: throw UnauthorizedException()
+            val albumIdParam: String? = call.request.queryParameters["albumId"]
 
-            val response = songController.createSong(songRequest, song, image, userId)
+            val response = songController.createSong(songRequest, song, image, userId, albumIdParam)
 
             call.respond(response)
 

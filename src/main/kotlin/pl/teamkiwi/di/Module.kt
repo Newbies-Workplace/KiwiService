@@ -26,11 +26,11 @@ val module = module {
     single { UserService(get()) }
     single { UserRepository() }
 
-    single { SongController(get(), get()) }
+    single { SongController(get(), get(), get()) }
     single { SongService(get()) }
     single { SongRepository() }
 
-    single { AlbumController(get(), get()) }
+    single { AlbumController(get(), get(), get()) }
     single { AlbumService(get()) }
     single { AlbumRepository() }
 
