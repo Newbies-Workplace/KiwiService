@@ -13,16 +13,18 @@ fun SongDAO.toSongDTO() =
         path = path,
         imagePath = imagePath,
         artistId = artistId,
+        albumId = album.firstOrNull()?.id?.value,
         duration = duration,
         uploadDate = uploadDate.toDate()
     )
 
-    fun SongCreateRequest.toSongCreateDTO(
-        path: String,
-        imagePath: String?,
-        artistId: String,
-        duration: Long
-    ) = SongCreateDTO(
+fun SongCreateRequest.toSongCreateDTO(
+    path: String,
+    imagePath: String?,
+    artistId: String,
+    duration: Long
+) =
+    SongCreateDTO(
         title = title,
         path = path,
         imagePath = imagePath,

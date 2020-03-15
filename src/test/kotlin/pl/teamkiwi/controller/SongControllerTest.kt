@@ -13,6 +13,7 @@ import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.request.SongCreateRequest
+import pl.teamkiwi.service.AlbumService
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
 import java.util.*
@@ -21,8 +22,9 @@ import java.util.*
 internal class SongControllerTest {
 
     private val songService = mockk<SongService>()
+    private val albumService = mockk<AlbumService>()
     private val fileService = mockk<FileService>()
-    private val songController = SongController(songService, fileService)
+    private val songController = SongController(songService, albumService, fileService)
 
     @Nested
     inner class CreateSong {
@@ -72,6 +74,49 @@ internal class SongControllerTest {
             //then
             assertEquals(songDTO, song)
             verify(exactly = 0) { fileService.deleteFile(any()) }
+        }
+
+        @Test
+        fun `should throw NotFoundException when there is no album with specified albumId`() {
+            //given
+            val songCreateRequest = SongCreateRequest("title")
+            val songFile = mockk<PartData.FileItem>()
+            val userId = "baee8a8c-2c3e-4e71-b85e-9264e0a563d3" //random UUID
+            val albumId = "albumId"
+
+            coEvery { fileService.saveSong(songFile) } returns "anyString"
+            every { songService.save(any()) } returns mockk()
+            every { albumService.findById(albumId) } returns null
+            every { fileService.deleteFile(any()) } just runs
+
+            //when
+            assertThrows<NotFoundException> {
+                runBlocking {
+                    songController.createSong(songCreateRequest, songFile, null, userId, albumId)
+                }
+            }
+        }
+
+        @Test
+        fun `should throw ForbiddenException when album is not posted by user`() {
+            //given
+            val songCreateRequest = SongCreateRequest("title")
+            val songFile = mockk<PartData.FileItem>()
+            val userId = "firstUserId"
+            val albumId = "albumId"
+            val album = createTestAlbum(id = albumId, artistId = "secondUserId")
+
+            coEvery { fileService.saveSong(songFile) } returns "anyString"
+            every { songService.save(any()) } returns mockk()
+            every { albumService.findById(albumId) } returns album
+            every { fileService.deleteFile(any()) } just runs
+
+            //when
+            assertThrows<ForbiddenException> {
+                runBlocking {
+                    songController.createSong(songCreateRequest, songFile, null, userId, albumId)
+                }
+            }
         }
     }
 
@@ -160,6 +205,7 @@ fun createTestSong(
     title: String = "SongTitle",
     imagePath: String? = null,
     artistId: String = "artistRandomId",
+    albumId: String? = null,
     path: String = "path/song.mp3",
     duration: Long = 100L,
     uploadDate: Date = Date()
@@ -169,6 +215,7 @@ fun createTestSong(
         title = title,
         imagePath = imagePath,
         artistId = artistId,
+        albumId = albumId,
         path = path,
         duration = duration,
         uploadDate = uploadDate

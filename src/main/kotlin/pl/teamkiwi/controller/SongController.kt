@@ -7,11 +7,13 @@ import pl.teamkiwi.exception.NoContentException
 import pl.teamkiwi.exception.NotFoundException
 import pl.teamkiwi.model.dto.SongDTO
 import pl.teamkiwi.model.request.SongCreateRequest
+import pl.teamkiwi.service.AlbumService
 import pl.teamkiwi.service.FileService
 import pl.teamkiwi.service.SongService
 
 class SongController(
     private val songService: SongService,
+    private val albumService: AlbumService,
     private val fileService: FileService
 ) {
 
@@ -19,7 +21,8 @@ class SongController(
         songRequest: SongCreateRequest,
         song: PartData.FileItem,
         image: PartData.FileItem?,
-        userId: String
+        userId: String,
+        albumId: String? = null
     ): SongDTO {
         var songPath: String? = null
         var imagePath: String? = null
@@ -29,12 +32,26 @@ class SongController(
             imagePath = image?.let { fileService.saveImage(it) }
 
             val songCreateDTO = songRequest.toSongCreateDTO(
-                    songPath!!,
-                    imagePath,
-                    userId,
-                    100L) //todo extract song duration
+                songPath!!,
+                imagePath,
+                userId,
+                100L //todo extract song duration
+            )
 
-            return songService.save(songCreateDTO)
+            val createdSong = songService.save(songCreateDTO)
+
+            //add song to album if albumId is not null
+            albumId?.let { id ->
+                val album = albumService.findById(id) ?: throw NotFoundException()
+
+                if (album.artistId != userId) {
+                    throw ForbiddenException()
+                }
+
+                albumService.addSongs(id, listOf(createdSong.id))
+            }
+
+            return createdSong
         }.getOrElse { exception ->
             songPath?.let { fileService.deleteFile(it) }
             imagePath?.let { fileService.deleteFile(it) }

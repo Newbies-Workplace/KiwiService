@@ -7,6 +7,7 @@ data class SongDTO(
     override val title: String,
     override val imagePath: String?,
     override val artistId: String,
+    val albumId: String?,
     val path: String,
     val duration: Long,
     val uploadDate: Date

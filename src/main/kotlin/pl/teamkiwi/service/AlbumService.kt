@@ -16,4 +16,10 @@ class AlbumService(
 
     fun findAll(): List<AlbumDTO> =
         albumRepository.findAll()
+
+    fun addSongs(id: String, songIds: List<String>) =
+        albumRepository.addSongs(id, songIds)
+
+    fun removeSongs(songIds: List<String>) =
+        albumRepository.removeSongs(songIds)
 }

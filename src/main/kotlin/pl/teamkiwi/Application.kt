@@ -24,6 +24,7 @@ import pl.jutupe.Exposed
 import pl.teamkiwi.auth.server
 import pl.teamkiwi.di.module
 import pl.teamkiwi.exception.*
+import pl.teamkiwi.repository.table.AlbumSongs
 import pl.teamkiwi.repository.table.Albums
 import pl.teamkiwi.repository.table.Songs
 import pl.teamkiwi.repository.table.Users
@@ -59,7 +60,8 @@ fun Application.mainModule() {
         createSchemas(
             Users,
             Songs,
-            Albums
+            Albums,
+            AlbumSongs
         )
     }
 
@@ -83,7 +85,7 @@ fun Application.mainModule() {
     install(StatusPages) {
         exception<BadRequestException> { call.respond(HttpStatusCode.BadRequest) }
         exception<NotFoundException> { call.respond(HttpStatusCode.NotFound) }
-        exception<AccountAlreadyExistsException> { call.respond(HttpStatusCode.Conflict) }
+        exception<ConflictException> { call.respond(HttpStatusCode.Conflict) }
         exception<NoContentException> { call.respond(HttpStatusCode.NoContent) }
         exception<UnauthorizedException> { call.respond(HttpStatusCode.Unauthorized) }
         exception<UnsupportedExtensionException> { call.respond(HttpStatusCode.UnsupportedMediaType) }

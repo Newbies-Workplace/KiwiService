@@ -1,3 +1,3 @@
 package pl.teamkiwi.exception
 
-class AccountAlreadyExistsException : Exception()
+class AccountAlreadyExistsException : ConflictException()
