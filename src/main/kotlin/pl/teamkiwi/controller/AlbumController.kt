@@ -54,6 +54,13 @@ class AlbumController(
         return albums
     }
 
+    fun deleteAlbum(albumId: String, userId: String) {
+        //check permission for album
+        assertAlbumPermission(userId, albumId)
+
+        albumService.deleteById(albumId)
+    }
+
     fun addSongs(albumId: String, songIds: List<String>, userId: String) {
         //check permission for album
         assertAlbumPermission(userId, albumId)

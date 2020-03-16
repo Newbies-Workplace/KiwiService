@@ -51,7 +51,10 @@ class SongController(
                 albumService.addSongs(id, listOf(createdSong.id))
             }
 
-            return createdSong
+            //we need to set albumId here, because song was created before album was set
+            return albumId?.let {
+                createdSong.copy(albumId = albumId)
+            } ?: createdSong
         }.getOrElse { exception ->
             songPath?.let { fileService.deleteFile(it) }
             imagePath?.let { fileService.deleteFile(it) }

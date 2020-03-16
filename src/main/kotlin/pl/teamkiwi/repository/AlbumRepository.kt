@@ -9,6 +9,7 @@ import pl.teamkiwi.repository.dao.AlbumDAO
 import pl.teamkiwi.repository.dao.AlbumSongDAO
 import pl.teamkiwi.repository.dao.SongDAO
 import pl.teamkiwi.repository.table.AlbumSongs
+import pl.teamkiwi.repository.table.Albums
 
 class AlbumRepository {
 
@@ -31,6 +32,13 @@ class AlbumRepository {
         transaction {
             AlbumDAO.all()
                 .map { it.toAlbumDTO() }
+        }
+
+    fun delete(id: String) =
+        transaction {
+            Albums.deleteWhere {
+                Albums.id eq id
+            }
         }
 
     fun addSongs(albumId: String, songIds: List<String>) {

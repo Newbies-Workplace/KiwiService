@@ -105,6 +105,11 @@ class AlbumControllerTest {
     }
 
     @Nested
+    inner class DeleteAlbum {
+        //todo after refactor
+    }
+
+    @Nested
     inner class AddSongs {
 
         @Test
