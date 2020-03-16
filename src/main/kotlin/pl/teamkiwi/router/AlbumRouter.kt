@@ -50,8 +50,14 @@ fun Routing.albumRoutes() {
             call.respond(albumController.getAllAlbums())
         }
 
-        /*delete("v1/album/{id}") {
-        }*/
+        delete("v1/album/{id}") {
+            val id = call.idParameter()
+            val userId = call.authPrincipal()?.userId ?: throw UnauthorizedException()
+
+            albumController.deleteAlbum(id, userId)
+
+            call.respond("")
+        }
 
         put("v1/album/{id}/songs") {
             val id = call.idParameter()
