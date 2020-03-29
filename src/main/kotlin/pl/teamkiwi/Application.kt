@@ -21,17 +21,17 @@ import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.slf4j.event.Level
 import pl.jutupe.Exposed
-import pl.teamkiwi.auth.server
+import pl.teamkiwi.application.auth.server
+import pl.teamkiwi.application.router.albumRoutes
+import pl.teamkiwi.application.router.songRoutes
+import pl.teamkiwi.application.router.userRoutes
+import pl.teamkiwi.application.util.getProp
 import pl.teamkiwi.di.module
-import pl.teamkiwi.exception.*
-import pl.teamkiwi.repository.table.AlbumSongs
-import pl.teamkiwi.repository.table.Albums
-import pl.teamkiwi.repository.table.Songs
-import pl.teamkiwi.repository.table.Users
-import pl.teamkiwi.router.albumRoutes
-import pl.teamkiwi.router.songRoutes
-import pl.teamkiwi.router.userRoutes
-import pl.teamkiwi.util.getProp
+import pl.teamkiwi.domain.model.exception.*
+import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.table.Albums
+import pl.teamkiwi.infrastructure.repository.table.Songs
+import pl.teamkiwi.infrastructure.repository.table.Users
 
 fun main(args: Array<String>) {
     embeddedServer(

@@ -5,18 +5,21 @@ import io.ktor.config.ApplicationConfig
 import io.ktor.config.HoconApplicationConfig
 import org.koin.dsl.module
 import pl.jutupe.DatabaseConfiguration
-import pl.teamkiwi.controller.AlbumController
-import pl.teamkiwi.controller.SongController
-import pl.teamkiwi.controller.UserController
-import pl.teamkiwi.repository.AlbumRepository
-import pl.teamkiwi.repository.SongRepository
-import pl.teamkiwi.repository.UserRepository
-import pl.teamkiwi.service.AlbumService
-import pl.teamkiwi.service.FileService
-import pl.teamkiwi.service.SongService
-import pl.teamkiwi.service.UserService
-import pl.teamkiwi.util.getProp
-import pl.teamkiwi.util.getPropList
+import pl.teamkiwi.application.controller.AlbumController
+import pl.teamkiwi.application.controller.SongController
+import pl.teamkiwi.application.controller.UserController
+import pl.teamkiwi.application.util.getProp
+import pl.teamkiwi.application.util.getPropList
+import pl.teamkiwi.domain.`interface`.AlbumRepository
+import pl.teamkiwi.domain.`interface`.SongRepository
+import pl.teamkiwi.domain.`interface`.UserRepository
+import pl.teamkiwi.domain.service.AlbumService
+import pl.teamkiwi.domain.service.FileService
+import pl.teamkiwi.domain.service.SongService
+import pl.teamkiwi.domain.service.UserService
+import pl.teamkiwi.infrastructure.repository.AlbumExposedRepository
+import pl.teamkiwi.infrastructure.repository.SongExposedRepository
+import pl.teamkiwi.infrastructure.repository.UserExposedRepository
 
 val module = module {
     @Suppress("EXPERIMENTAL_API_USAGE")
@@ -24,15 +27,15 @@ val module = module {
 
     single { UserController(get()) }
     single { UserService(get()) }
-    single { UserRepository() }
+    single { UserExposedRepository() as UserRepository }
 
-    single { SongController(get(), get(), get()) }
-    single { SongService(get()) }
-    single { SongRepository() }
+    single { SongController(get(), get()) }
+    single { SongService(get(), get(), get()) }
+    single { SongExposedRepository() as SongRepository }
 
-    single { AlbumController(get(), get(), get()) }
-    single { AlbumService(get()) }
-    single { AlbumRepository() }
+    single { AlbumController(get(), get()) }
+    single { AlbumService(get(), get()) }
+    single { AlbumExposedRepository() as AlbumRepository }
 
     single { DatabaseConfiguration(
         url = getProp("kiwi.database.url"),
