@@ -25,17 +25,6 @@ class SongService(
     ): Song {
         val songId = UUID.randomUUID().toString()
 
-        //add song to album if albumId is not null
-        albumId?.let { id ->
-            val album = albumRepository.findById(id) ?: throw NotFoundException()
-
-            if (album.artistId != userId) {
-                throw ForbiddenException()
-            }
-
-            albumRepository.addSongs(id, listOf(songId))
-        }
-
         val song = Song(
             id = songId,
             title = songRequest.title,
@@ -47,7 +36,20 @@ class SongService(
             uploadDate = DateTime.now()
         )
 
-        return songRepository.save(song)
+        val savedSong = songRepository.save(song)
+
+        //add song to album if albumId is not null
+        albumId?.let { id ->
+            val album = albumRepository.findById(id) ?: throw NotFoundException()
+
+            if (album.artistId != userId) {
+                throw ForbiddenException()
+            }
+
+            albumRepository.addSongs(id, listOf(songId))
+        }
+
+        return savedSong
     }
 
     fun getSongById(id: String): Song =
