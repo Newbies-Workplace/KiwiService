@@ -1,16 +1,25 @@
 package pl.teamkiwi.application.controller
 
 import io.ktor.application.ApplicationCall
+import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
+import pl.teamkiwi.application.converter.SongConverter
 import pl.teamkiwi.application.model.request.SongCreateRequest
 import pl.teamkiwi.application.util.*
+import pl.teamkiwi.domain.model.entity.ImageFile
+import pl.teamkiwi.domain.model.entity.SongFile
 import pl.teamkiwi.domain.model.exception.BadRequestException
-import pl.teamkiwi.domain.service.FileService
+import pl.teamkiwi.domain.model.exception.NoContentException
+import pl.teamkiwi.domain.model.exception.NotFoundException
 import pl.teamkiwi.domain.service.SongService
+import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
+import pl.teamkiwi.infrastructure.repository.file.SongFileRepository
 
 class SongController(
     private val songService: SongService,
-    private val fileService: FileService
+    private val songFileRepository: SongFileRepository,
+    private val imageFileRepository: ImageFileRepository,
+    private val songConverter: SongConverter
 ) {
 
     suspend fun postSong(call: ApplicationCall) {
@@ -18,25 +27,26 @@ class SongController(
         val partDataMap = call.receiveMultipartMap()
 
         val songRequest = partDataMap.getRequestOrNull<SongCreateRequest>() ?: throw BadRequestException()
-        val song = partDataMap.getSongOrNull() ?: throw BadRequestException()
-        val image = partDataMap.getImageOrNull()
+        val songItem = partDataMap.getSongOrNull() ?: throw BadRequestException()
+        val imageItem = partDataMap.getImageOrNull()
         val albumIdParam: String? = call.request.queryParameters["albumId"]
 
-        var songPath: String? = null
-        var imagePath: String? = null
+        var songFile: SongFile? = null
+        var imageFile: ImageFile? = null
 
         runCatching {
-            songPath = fileService.saveSong(song)
-            imagePath = image?.let { fileService.saveImage(it) }
+            songFile = songFileRepository.save(songItem)
+            imageFile = imageItem?.let { imageFileRepository.save(it) }
 
-            val response = songService.createSong(songRequest, songPath!!, imagePath, userId, albumIdParam)
+            val song = songService.createSong(songRequest, songFile!!, imageFile, userId, albumIdParam)
+            val response = with(songConverter) { song.toSongResponse() }
 
-            call.respond(response)
+            call.respond(HttpStatusCode.Created, response)
 
             partDataMap.dispose()
         }.getOrElse { exception ->
-            songPath?.let { fileService.deleteFile(it) }
-            imagePath?.let { fileService.deleteFile(it) }
+            songFile?.let { songFileRepository.delete(it) }
+            imageFile?.let { imageFileRepository.delete(it) }
 
             partDataMap.dispose()
 
@@ -46,13 +56,25 @@ class SongController(
     }
 
     suspend fun getSongById(call: ApplicationCall, id: String) {
-        val response = songService.getSongById(id)
+        val song = songService.getSongById(id) ?: throw NotFoundException()
+
+        val response = with(songConverter) { song.toSongResponse() }
 
         call.respond(response)
     }
 
     suspend fun getAllSongs(call: ApplicationCall) {
-        call.respond(songService.getAllSongs())
+        val songs = songService.getAllSongs()
+
+        if (songs.isEmpty()) {
+            throw NoContentException()
+        }
+
+        val response = with(songConverter) {
+            songs.map { it.toSongResponse() }
+        }
+
+        call.respond(response)
     }
 
     suspend fun deleteSongById(call: ApplicationCall, id: String) {

@@ -23,15 +23,16 @@ import org.slf4j.event.Level
 import pl.jutupe.Exposed
 import pl.teamkiwi.application.auth.server
 import pl.teamkiwi.application.router.albumRoutes
+import pl.teamkiwi.application.router.fileRoutes
 import pl.teamkiwi.application.router.songRoutes
 import pl.teamkiwi.application.router.userRoutes
 import pl.teamkiwi.application.util.getProp
 import pl.teamkiwi.di.module
 import pl.teamkiwi.domain.model.exception.*
-import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
-import pl.teamkiwi.infrastructure.repository.table.Albums
-import pl.teamkiwi.infrastructure.repository.table.Songs
-import pl.teamkiwi.infrastructure.repository.table.Users
+import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.exposed.table.Albums
+import pl.teamkiwi.infrastructure.repository.exposed.table.Songs
+import pl.teamkiwi.infrastructure.repository.exposed.table.Users
 
 fun main(args: Array<String>) {
     embeddedServer(
@@ -90,6 +91,7 @@ fun Application.mainModule() {
         exception<UnauthorizedException> { call.respond(HttpStatusCode.Unauthorized) }
         exception<UnsupportedExtensionException> { call.respond(HttpStatusCode.UnsupportedMediaType) }
         exception<FileSaveException> { call.respond(HttpStatusCode.InternalServerError) }
+        exception<FileDeleteException> { call.respond(HttpStatusCode.InternalServerError) }
         exception<ForbiddenException> { call.respond(HttpStatusCode.Forbidden) }
     }
 
@@ -97,5 +99,6 @@ fun Application.mainModule() {
         userRoutes()
         songRoutes()
         albumRoutes()
+        fileRoutes()
     }
 }

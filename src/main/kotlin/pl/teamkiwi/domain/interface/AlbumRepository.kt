@@ -1,7 +1,7 @@
 package pl.teamkiwi.domain.`interface`
 
 import pl.teamkiwi.domain.model.entity.Album
-import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
 
 interface AlbumRepository {
 

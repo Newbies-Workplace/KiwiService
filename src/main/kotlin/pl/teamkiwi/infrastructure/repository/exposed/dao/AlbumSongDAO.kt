@@ -1,9 +1,9 @@
-package pl.teamkiwi.infrastructure.repository.dao
+package pl.teamkiwi.infrastructure.repository.exposed.dao
 
 import org.jetbrains.exposed.dao.EntityID
-import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntity
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntityClass
+import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntity
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntityClass
 
 class AlbumSongDAO(id: EntityID<String>): StringIdEntity(id) {
     companion object : StringIdEntityClass<AlbumSongDAO>(AlbumSongs)

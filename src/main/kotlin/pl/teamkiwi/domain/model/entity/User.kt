@@ -6,6 +6,5 @@ data class User(
     val id: String,
     val username: String,
     val description: String? = null,
-    val avatarPath: String? = null,
     val creationDate: DateTime
 )

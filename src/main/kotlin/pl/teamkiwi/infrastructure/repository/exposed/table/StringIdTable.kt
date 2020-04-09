@@ -1,11 +1,11 @@
-package pl.teamkiwi.infrastructure.repository.table
+package pl.teamkiwi.infrastructure.repository.exposed.table
 
 import org.jetbrains.exposed.dao.Entity
 import org.jetbrains.exposed.dao.EntityClass
 import org.jetbrains.exposed.dao.EntityID
 import org.jetbrains.exposed.dao.IdTable
 import org.jetbrains.exposed.sql.Column
-import pl.teamkiwi.infrastructure.repository.table.Constants.DEFAULT_CHARSET
+import pl.teamkiwi.infrastructure.repository.exposed.table.Constants.DEFAULT_CHARSET
 import java.util.*
 
 const val STRING_UUID_LENGTH = 60

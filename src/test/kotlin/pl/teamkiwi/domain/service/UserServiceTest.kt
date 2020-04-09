@@ -8,12 +8,10 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import pl.teamkiwi.application.converter.toUserResponse
 import pl.teamkiwi.application.model.request.UserCreateRequest
 import pl.teamkiwi.domain.model.entity.User
 import pl.teamkiwi.domain.model.exception.AccountAlreadyExistsException
-import pl.teamkiwi.domain.model.exception.NotFoundException
-import pl.teamkiwi.infrastructure.repository.UserExposedRepository
+import pl.teamkiwi.infrastructure.repository.exposed.UserExposedRepository
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class UserServiceTest {
@@ -22,7 +20,7 @@ internal class UserServiceTest {
     private val userController = UserService(userRepository)
 
     @Nested
-    inner class PostUser {
+    inner class CreateUser {
 
         @Test
         fun `should create user when valid data passed`() {
@@ -43,7 +41,7 @@ internal class UserServiceTest {
             val foundUser = userController.createUser(id, userCreateRequest)
 
             //then
-            assertEquals(testUser.toUserResponse(), foundUser)
+            assertEquals(testUser, foundUser)
         }
 
         @Test
@@ -76,21 +74,7 @@ internal class UserServiceTest {
             val foundUser = userController.getUserById(id)
 
             //then
-            assertEquals(validUserResponse.toUserResponse(), foundUser)
-        }
-
-        @Test
-        fun `should throw NotFoundException when id doesn't match`(){
-            //given
-            val validId = "validId"
-
-            //when
-            every { userRepository.findById(validId) } returns null
-
-            //then
-            assertThrows<NotFoundException> {
-                userController.getUserById(validId)
-            }
+            assertEquals(validUserResponse, foundUser)
         }
     }
 }
@@ -107,12 +91,10 @@ fun createTestUser(
     id: String = "67b44030-4448-11ea-b77f-2e728ce88125",
     username: String = "UserName",
     description: String? = null,
-    avatarPath: String? = null,
     creationDate: DateTime = DateTime.now()
 ) = User(
     id = id,
     username = username,
     description = description,
-    avatarPath = avatarPath,
     creationDate = creationDate
 )

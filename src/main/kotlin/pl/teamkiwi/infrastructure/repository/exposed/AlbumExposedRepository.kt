@@ -1,14 +1,14 @@
-package pl.teamkiwi.infrastructure.repository
+package pl.teamkiwi.infrastructure.repository.exposed
 
 import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import pl.teamkiwi.domain.`interface`.AlbumRepository
 import pl.teamkiwi.domain.model.entity.Album
-import pl.teamkiwi.infrastructure.repository.dao.AlbumDAO
-import pl.teamkiwi.infrastructure.repository.dao.AlbumSongDAO
-import pl.teamkiwi.infrastructure.repository.dao.SongDAO
-import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
-import pl.teamkiwi.infrastructure.repository.table.Albums
+import pl.teamkiwi.infrastructure.repository.exposed.dao.AlbumDAO
+import pl.teamkiwi.infrastructure.repository.exposed.dao.AlbumSongDAO
+import pl.teamkiwi.infrastructure.repository.exposed.dao.SongDAO
+import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.exposed.table.Albums
 
 class AlbumExposedRepository : AlbumRepository {
 
@@ -17,7 +17,7 @@ class AlbumExposedRepository : AlbumRepository {
             AlbumDAO.new(album.id) {
                 title = album.title
                 artistId = album.artistId
-                imagePath = album.imagePath
+                imagePath = album.imageFile?.name
                 uploadDate = album.uploadDate
             }.toAlbum()
         }

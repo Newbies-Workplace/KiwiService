@@ -4,22 +4,26 @@ import org.joda.time.DateTime
 import pl.teamkiwi.application.model.request.SongCreateRequest
 import pl.teamkiwi.domain.`interface`.AlbumRepository
 import pl.teamkiwi.domain.`interface`.SongRepository
+import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.entity.Song
+import pl.teamkiwi.domain.model.entity.SongFile
 import pl.teamkiwi.domain.model.exception.ForbiddenException
-import pl.teamkiwi.domain.model.exception.NoContentException
 import pl.teamkiwi.domain.model.exception.NotFoundException
+import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
+import pl.teamkiwi.infrastructure.repository.file.SongFileRepository
 import java.util.*
 
 class SongService(
     private val songRepository: SongRepository,
     private val albumRepository: AlbumRepository,
-    private val fileService: FileService
+    private val imageFileRepository: ImageFileRepository,
+    private val songFileRepository: SongFileRepository
 ) {
 
     fun createSong(
         songRequest: SongCreateRequest,
-        songPath: String,
-        imagePath: String?,
+        songFile: SongFile,
+        imageFile: ImageFile?,
         userId: String,
         albumId: String? = null
     ): Song {
@@ -28,8 +32,8 @@ class SongService(
         val song = Song(
             id = songId,
             title = songRequest.title,
-            path = songPath,
-            imagePath = imagePath,
+            file = songFile,
+            imageFile = imageFile,
             artistId = userId,
             duration = 100L, //todo extract song duration,
             albumId = albumId,
@@ -52,18 +56,11 @@ class SongService(
         return savedSong
     }
 
-    fun getSongById(id: String): Song =
-        songRepository.findById(id) ?: throw NotFoundException()
+    fun getSongById(id: String): Song? =
+        songRepository.findById(id)
 
-    fun getAllSongs(): List<Song> {
-        val songs = songRepository.findAll()
-
-        if (songs.isEmpty()) {
-            throw NoContentException()
-        }
-
-        return songs
-    }
+    fun getAllSongs(): List<Song> =
+        songRepository.findAll()
 
     fun deleteSong(id: String, userId: String) {
         val song = songRepository.findById(id) ?: throw NotFoundException()
@@ -72,8 +69,8 @@ class SongService(
             throw ForbiddenException()
         }
 
-        fileService.deleteFile(song.path)
-        song.imagePath?.let { fileService.deleteFile(it) }
+        songFileRepository.delete(song.file)
+        song.imageFile?.let { imageFileRepository.delete(song.imageFile) }
 
         songRepository.deleteById(id)
     }

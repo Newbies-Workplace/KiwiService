@@ -13,6 +13,7 @@ import pl.teamkiwi.application.model.request.AlbumCreateRequest
 import pl.teamkiwi.domain.`interface`.AlbumRepository
 import pl.teamkiwi.domain.`interface`.SongRepository
 import pl.teamkiwi.domain.model.entity.Album
+import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.exception.ForbiddenException
 import pl.teamkiwi.domain.model.exception.NotFoundException
 
@@ -32,13 +33,13 @@ class AlbumServiceTest {
             val albumCreateRequest = AlbumCreateRequest("album title")
             val albumDTO = mockk<Album>()
             val userId = "baee8a8c-2c3e-4e71-b85e-9264e0a563d3" //random UUID
-            val imagePath = "songPath.mp3"
+            val imageFile = ImageFile("image.jpg")
 
             every { albumRepository.save(any()) } returns albumDTO
 
             //when
             val song = runBlocking {
-                albumService.createAlbum(albumCreateRequest, imagePath, userId)
+                albumService.createAlbum(albumCreateRequest, imageFile, userId)
             }
 
             //then
@@ -48,18 +49,6 @@ class AlbumServiceTest {
 
     @Nested
     inner class GetAlbum {
-
-        @Test
-        fun `should throw NotFoundException when there is no album with specific id`() {
-            //given
-            val albumId = "albumId"
-            every { albumRepository.findById(albumId) } returns null
-
-            //when
-            assertThrows<NotFoundException> {
-                albumService.getAlbumById(albumId)
-            }
-        }
 
         @Test
         fun `should return album when found with specified id`() {
@@ -215,7 +204,7 @@ class AlbumServiceTest {
 fun createTestAlbum(
     id: String = "songId",
     title: String = "SongTitle",
-    imagePath: String? = null,
+    imageFile: ImageFile? = null,
     artistId: String = "artistRandomId",
     uploadDate: DateTime = DateTime.now()
 ) =
@@ -223,6 +212,6 @@ fun createTestAlbum(
         id = id,
         title = title,
         artistId = artistId,
-        imagePath = imagePath,
+        imageFile = imageFile,
         uploadDate = uploadDate
     )

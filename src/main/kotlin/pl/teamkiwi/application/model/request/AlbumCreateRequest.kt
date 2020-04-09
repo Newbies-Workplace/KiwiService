@@ -3,7 +3,7 @@ package pl.teamkiwi.application.model.request
 import org.valiktor.functions.hasSize
 import org.valiktor.functions.isNotBlank
 import org.valiktor.validate
-import pl.teamkiwi.infrastructure.repository.constants.TITLE_MAX_LENGTH
+import pl.teamkiwi.infrastructure.repository.exposed.constants.TITLE_MAX_LENGTH
 
 data class AlbumCreateRequest(
     val title: String
