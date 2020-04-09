@@ -31,6 +31,9 @@ suspend inline fun <reified T : Any> ApplicationCall.myReceive(
 fun ApplicationCall.idParameter(): String =
         parameters["id"] ?: throw BadRequestException()
 
+fun ApplicationCall.fileNameParameter(): String =
+    parameters["fileName"] ?: throw BadRequestException()
+
 fun ApplicationCall.authPrincipal(): AuthPrincipal =
     authentication.principal() ?: throw UnauthorizedException()
 

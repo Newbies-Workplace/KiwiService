@@ -1,11 +1,13 @@
-package pl.teamkiwi.infrastructure.repository.dao
+package pl.teamkiwi.infrastructure.repository.exposed.dao
 
 import org.jetbrains.exposed.dao.EntityID
+import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.entity.Song
-import pl.teamkiwi.infrastructure.repository.table.AlbumSongs
-import pl.teamkiwi.infrastructure.repository.table.Songs
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntity
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntityClass
+import pl.teamkiwi.domain.model.entity.SongFile
+import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
+import pl.teamkiwi.infrastructure.repository.exposed.table.Songs
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntity
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntityClass
 
 class SongDAO(id: EntityID<String>) : StringIdEntity(id) {
     companion object : StringIdEntityClass<SongDAO>(Songs)
@@ -22,8 +24,8 @@ class SongDAO(id: EntityID<String>) : StringIdEntity(id) {
         Song(
             id = id.value,
             title = title,
-            path = path,
-            imagePath = imagePath,
+            file = SongFile(path),
+            imageFile = imagePath?.let { ImageFile(it) },
             artistId = artistId,
             albumId = album.firstOrNull()?.id?.value,
             duration = duration,

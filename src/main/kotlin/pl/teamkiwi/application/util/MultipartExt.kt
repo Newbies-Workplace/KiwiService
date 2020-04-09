@@ -3,6 +3,10 @@ package pl.teamkiwi.application.util
 import io.ktor.http.content.MultiPartData
 import io.ktor.http.content.PartData
 import io.ktor.http.content.forEachPart
+import io.ktor.http.content.streamProvider
+import pl.teamkiwi.domain.model.entity.DomainFile
+import pl.teamkiwi.domain.model.exception.BadRequestException
+import pl.teamkiwi.infrastructure.repository.file.FileRepository
 
 /**
  * Creates a map with key equals to part name
@@ -44,4 +48,11 @@ fun MutableMap<String, PartData>.dispose() {
         it.value.dispose()
     }
     clear()
+}
+
+fun <T: DomainFile> FileRepository<T>.save(item: PartData.FileItem): T {
+    val inputStream = item.streamProvider()
+    val extension = item.originalFileName.getExtension() ?: throw BadRequestException()
+
+    return save(inputStream, extension)
 }

@@ -1,10 +1,10 @@
-package pl.teamkiwi.infrastructure.repository.table
+package pl.teamkiwi.infrastructure.repository.exposed.table
 
 import org.joda.time.DateTime
-import pl.teamkiwi.infrastructure.repository.constants.IMAGE_PATH_MAX_LENGTH
-import pl.teamkiwi.infrastructure.repository.constants.PATH_MAX_LENGTH
-import pl.teamkiwi.infrastructure.repository.constants.TITLE_MAX_LENGTH
-import pl.teamkiwi.infrastructure.repository.table.Constants.DEFAULT_CHARSET
+import pl.teamkiwi.infrastructure.repository.exposed.constants.IMAGE_PATH_MAX_LENGTH
+import pl.teamkiwi.infrastructure.repository.exposed.constants.PATH_MAX_LENGTH
+import pl.teamkiwi.infrastructure.repository.exposed.constants.TITLE_MAX_LENGTH
+import pl.teamkiwi.infrastructure.repository.exposed.table.Constants.DEFAULT_CHARSET
 
 /**
  * Database table

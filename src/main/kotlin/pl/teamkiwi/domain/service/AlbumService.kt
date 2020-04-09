@@ -5,9 +5,9 @@ import pl.teamkiwi.application.model.request.AlbumCreateRequest
 import pl.teamkiwi.domain.`interface`.AlbumRepository
 import pl.teamkiwi.domain.`interface`.SongRepository
 import pl.teamkiwi.domain.model.entity.Album
+import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.exception.BadRequestException
 import pl.teamkiwi.domain.model.exception.ForbiddenException
-import pl.teamkiwi.domain.model.exception.NoContentException
 import pl.teamkiwi.domain.model.exception.NotFoundException
 import java.util.*
 
@@ -18,7 +18,7 @@ class AlbumService(
 
     fun createAlbum(
         albumCreateRequest: AlbumCreateRequest,
-        imagePath: String?,
+        imageFile: ImageFile?,
         userId: String
     ): Album {
         val id = UUID.randomUUID().toString()
@@ -27,25 +27,18 @@ class AlbumService(
             id = id,
             artistId = userId,
             title = albumCreateRequest.title,
-            imagePath = imagePath,
+            imageFile = imageFile,
             uploadDate = DateTime.now()
         )
 
         return albumRepository.save(album)
     }
 
-    fun getAlbumById(id: String): Album =
-        albumRepository.findById(id) ?: throw NotFoundException()
+    fun getAlbumById(id: String): Album? =
+        albumRepository.findById(id)
 
-    fun getAllAlbums(): List<Album> {
-        val albums = albumRepository.findAll()
-
-        if (albums.isEmpty()) {
-            throw NoContentException()
-        }
-
-        return albums
-    }
+    fun getAllAlbums(): List<Album> =
+        albumRepository.findAll()
 
     fun deleteAlbum(albumId: String, userId: String) {
         //check permission for album

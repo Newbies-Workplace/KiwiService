@@ -1,9 +1,9 @@
-package pl.teamkiwi.infrastructure.repository
+package pl.teamkiwi.infrastructure.repository.exposed
 
 import org.jetbrains.exposed.sql.transactions.transaction
 import pl.teamkiwi.domain.`interface`.UserRepository
 import pl.teamkiwi.domain.model.entity.User
-import pl.teamkiwi.infrastructure.repository.dao.UserDAO
+import pl.teamkiwi.infrastructure.repository.exposed.dao.UserDAO
 
 class UserExposedRepository : UserRepository {
 
@@ -12,7 +12,6 @@ class UserExposedRepository : UserRepository {
             UserDAO.new(user.id) {
                 username = user.username
                 description = user.description
-                avatarPath = user.avatarPath
                 creationDate = user.creationDate
             }.toUser()
         }

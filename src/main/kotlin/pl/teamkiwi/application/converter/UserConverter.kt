@@ -8,6 +8,5 @@ fun User.toUserResponse() =
         id = id,
         username = username,
         description = description,
-        avatarPath = avatarPath,
         creationDate = creationDate.toDate()
     )

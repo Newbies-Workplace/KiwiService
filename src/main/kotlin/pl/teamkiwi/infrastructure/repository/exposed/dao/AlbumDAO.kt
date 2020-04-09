@@ -1,10 +1,11 @@
-package pl.teamkiwi.infrastructure.repository.dao
+package pl.teamkiwi.infrastructure.repository.exposed.dao
 
 import org.jetbrains.exposed.dao.EntityID
 import pl.teamkiwi.domain.model.entity.Album
-import pl.teamkiwi.infrastructure.repository.table.Albums
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntity
-import pl.teamkiwi.infrastructure.repository.table.StringIdEntityClass
+import pl.teamkiwi.domain.model.entity.ImageFile
+import pl.teamkiwi.infrastructure.repository.exposed.table.Albums
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntity
+import pl.teamkiwi.infrastructure.repository.exposed.table.StringIdEntityClass
 
 class AlbumDAO(id: EntityID<String>) : StringIdEntity(id) {
     companion object : StringIdEntityClass<AlbumDAO>(Albums)
@@ -19,7 +20,7 @@ class AlbumDAO(id: EntityID<String>) : StringIdEntity(id) {
             id = id.value,
             title = title,
             artistId = artistId,
-            imagePath = imagePath,
+            imageFile = imagePath?.let { ImageFile(it) },
             uploadDate = uploadDate
         )
 }
