@@ -10,6 +10,7 @@ import pl.teamkiwi.application.controller.AlbumController
 import pl.teamkiwi.application.controller.FileController
 import pl.teamkiwi.application.controller.SongController
 import pl.teamkiwi.application.controller.UserController
+import pl.teamkiwi.application.converter.AlbumConverter
 import pl.teamkiwi.application.converter.SongConverter
 import pl.teamkiwi.application.util.DownloadPathProvider
 import pl.teamkiwi.application.util.getProp
@@ -40,6 +41,7 @@ val module = module {
     single { SongService(get(), get(), get(), get()) }
     single { SongExposedRepository() as SongRepository }
 
+    single { AlbumConverter(get(), get()) }
     single { AlbumController(get(), get(), get()) }
     single { AlbumService(get(), get()) }
     single { AlbumExposedRepository() as AlbumRepository }
