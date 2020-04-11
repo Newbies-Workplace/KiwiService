@@ -5,5 +5,6 @@ data class AlbumResponse(
     val title: String,
     val artistId: String,
     val imagePath: String?,
-    val uploadDate: Long
+    val uploadDate: Long,
+    val songs: List<String>
 )

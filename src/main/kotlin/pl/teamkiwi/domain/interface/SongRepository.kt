@@ -8,6 +8,8 @@ interface SongRepository {
 
     fun findById(id: String): Song?
 
+    fun findIdsByAlbumId(albumId: String): List<String>
+
     fun findAll(): List<Song>
 
     fun deleteById(id: String)

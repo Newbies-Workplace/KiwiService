@@ -20,7 +20,8 @@ class UserController(
         val principal = call.authPrincipal()
         val userCreateRequest = call.myReceive<UserCreateRequest>(BadRequestException())
 
-        val response = userService.createUser(principal.userId, userCreateRequest).toUserResponse()
+        val user = userService.createUser(principal.userId, userCreateRequest)
+        val response = user.toUserResponse()
 
         call.respond(HttpStatusCode.Created, response)
     }
@@ -36,7 +37,9 @@ class UserController(
     }
 
     suspend fun getUserById(call: ApplicationCall, id: String) {
-        val response = userService.getUserById(id)?.toUserResponse() ?: throw NotFoundException()
+        val user = userService.getUserById(id) ?: throw NotFoundException()
+
+        val response = user.toUserResponse()
 
         call.respond(response)
     }

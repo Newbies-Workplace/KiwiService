@@ -8,5 +8,5 @@ fun User.toUserResponse() =
         id = id,
         username = username,
         description = description,
-        creationDate = creationDate.toDate()
+        creationDate = creationDate.millis
     )
