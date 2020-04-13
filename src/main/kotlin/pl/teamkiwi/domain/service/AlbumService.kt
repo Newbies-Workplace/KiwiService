@@ -9,6 +9,7 @@ import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.exception.BadRequestException
 import pl.teamkiwi.domain.model.exception.ForbiddenException
 import pl.teamkiwi.domain.model.exception.NotFoundException
+import pl.teamkiwi.domain.model.util.Pagination
 import java.util.*
 
 class AlbumService(
@@ -37,8 +38,8 @@ class AlbumService(
     fun getAlbumById(id: String): Album? =
         albumRepository.findById(id)
 
-    fun getAllAlbums(): List<Album> =
-        albumRepository.findAll()
+    fun getAllAlbums(pagination: Pagination): List<Album> =
+        albumRepository.findAll(pagination)
 
     fun deleteAlbum(albumId: String, userId: String) {
         //check permission for album

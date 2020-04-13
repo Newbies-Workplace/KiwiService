@@ -1,6 +1,7 @@
 package pl.teamkiwi.domain.`interface`
 
 import pl.teamkiwi.domain.model.entity.Song
+import pl.teamkiwi.domain.model.util.Pagination
 
 interface SongRepository {
 
@@ -10,7 +11,7 @@ interface SongRepository {
 
     fun findIdsByAlbumId(albumId: String): List<String>
 
-    fun findAll(): List<Song>
+    fun findAll(pagination: Pagination): List<Song>
 
     fun deleteById(id: String)
 }

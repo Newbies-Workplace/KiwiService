@@ -4,6 +4,7 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.transactions.transaction
 import pl.teamkiwi.domain.`interface`.AlbumRepository
 import pl.teamkiwi.domain.model.entity.Album
+import pl.teamkiwi.domain.model.util.Pagination
 import pl.teamkiwi.infrastructure.repository.exposed.dao.AlbumDAO
 import pl.teamkiwi.infrastructure.repository.exposed.dao.AlbumSongDAO
 import pl.teamkiwi.infrastructure.repository.exposed.dao.SongDAO
@@ -27,9 +28,10 @@ class AlbumExposedRepository : AlbumRepository {
             AlbumDAO.findById(id)?.toAlbum()
         }
 
-    override fun findAll(): List<Album> =
+    override fun findAll(pagination: Pagination): List<Album> =
         transaction {
             AlbumDAO.all()
+                .limit(pagination.limit, pagination.offset)
                 .map { it.toAlbum() }
         }
 

@@ -1,6 +1,7 @@
 package pl.teamkiwi.domain.`interface`
 
 import pl.teamkiwi.domain.model.entity.Album
+import pl.teamkiwi.domain.model.util.Pagination
 import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
 
 interface AlbumRepository {
@@ -9,7 +10,7 @@ interface AlbumRepository {
 
     fun findById(id: String): Album?
 
-    fun findAll(): List<Album>
+    fun findAll(pagination: Pagination): List<Album>
 
     fun deleteById(id: String)
 
