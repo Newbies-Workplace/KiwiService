@@ -64,7 +64,9 @@ class SongController(
     }
 
     suspend fun getAllSongs(call: ApplicationCall) {
-        val songs = songService.getAllSongs()
+        val pagination = call.queryPagination()
+
+        val songs = songService.getAllSongs(pagination)
 
         if (songs.isEmpty()) {
             throw NoContentException()

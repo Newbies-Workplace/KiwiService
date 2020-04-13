@@ -9,6 +9,7 @@ import pl.teamkiwi.domain.model.entity.Song
 import pl.teamkiwi.domain.model.entity.SongFile
 import pl.teamkiwi.domain.model.exception.ForbiddenException
 import pl.teamkiwi.domain.model.exception.NotFoundException
+import pl.teamkiwi.domain.model.util.Pagination
 import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
 import pl.teamkiwi.infrastructure.repository.file.SongFileRepository
 import java.util.*
@@ -59,8 +60,8 @@ class SongService(
     fun getSongById(id: String): Song? =
         songRepository.findById(id)
 
-    fun getAllSongs(): List<Song> =
-        songRepository.findAll()
+    fun getAllSongs(pagination: Pagination): List<Song> =
+        songRepository.findAll(pagination)
 
     fun deleteSong(id: String, userId: String) {
         val song = songRepository.findById(id) ?: throw NotFoundException()

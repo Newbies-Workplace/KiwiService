@@ -56,7 +56,9 @@ class AlbumController (
     }
 
     suspend fun getAllAlbums(call: ApplicationCall) {
-        val albums = albumService.getAllAlbums()
+        val pagination = call.queryPagination()
+
+        val albums = albumService.getAllAlbums(pagination)
 
         if (albums.isEmpty()) {
             throw NoContentException()

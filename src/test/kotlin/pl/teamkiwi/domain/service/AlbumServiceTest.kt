@@ -16,6 +16,7 @@ import pl.teamkiwi.domain.model.entity.Album
 import pl.teamkiwi.domain.model.entity.ImageFile
 import pl.teamkiwi.domain.model.exception.ForbiddenException
 import pl.teamkiwi.domain.model.exception.NotFoundException
+import pl.teamkiwi.domain.model.util.DEFAULT_PAGINATION
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class AlbumServiceTest {
@@ -44,6 +45,23 @@ class AlbumServiceTest {
 
             //then
             assertEquals(albumDTO, song)
+        }
+    }
+
+    @Nested
+    inner class GetAllAlbums {
+
+        @Test
+        fun `should return all albums`() {
+            //given
+            val album = mockk<Album>()
+            every { albumRepository.findAll(DEFAULT_PAGINATION) } returns listOf(album)
+
+            //when
+            val albums = albumService.getAllAlbums(DEFAULT_PAGINATION)
+
+            //then
+            assertEquals(listOf(album), albums)
         }
     }
 

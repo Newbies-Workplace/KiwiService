@@ -19,6 +19,7 @@ import pl.teamkiwi.domain.model.entity.Song
 import pl.teamkiwi.domain.model.entity.SongFile
 import pl.teamkiwi.domain.model.exception.ForbiddenException
 import pl.teamkiwi.domain.model.exception.NotFoundException
+import pl.teamkiwi.domain.model.util.DEFAULT_PAGINATION
 import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
 import pl.teamkiwi.infrastructure.repository.file.SongFileRepository
 
@@ -120,10 +121,10 @@ internal class SongServiceTest {
         fun `should return all songs`() {
             //given
             val song = mockk<Song>()
-            every { songRepository.findAll() } returns listOf(song)
+            every { songRepository.findAll(DEFAULT_PAGINATION) } returns listOf(song)
 
             //when
-            val songs = songService.getAllSongs()
+            val songs = songService.getAllSongs(DEFAULT_PAGINATION)
 
             //then
             assertEquals(listOf(song), songs)
