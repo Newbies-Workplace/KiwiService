@@ -22,22 +22,22 @@ suspend inline fun <reified T : Any> ApplicationCall.safeReceive(): T? =
  * @param exception exception to throw, when receive fails
  */
 suspend inline fun <reified T : Any> ApplicationCall.myReceive(
-    exception: Exception = BadRequestException()
+    exception: Exception = BadRequestException("Error while trying to receive request data.")
 ): T =
     try {
         receive()
     } catch (e: Exception) {
-        throw exception
+        throw exception.initCause(e)
     }
 
 fun ApplicationCall.idParameter(): String =
-    parameters["id"] ?: throw BadRequestException()
+    parameters["id"] ?: throw BadRequestException("'id' parameter not present.")
 
 fun ApplicationCall.fileNameParameter(): String =
-    parameters["fileName"] ?: throw BadRequestException()
+    parameters["fileName"] ?: throw BadRequestException("'fileName' parameter not present.")
 
 fun ApplicationCall.authPrincipal(): AuthPrincipal =
-    authentication.principal() ?: throw UnauthorizedException()
+    authentication.principal() ?: throw UnauthorizedException("AuthPrincipal was not found in request (probably our fault).")
 
 /**
  * limit is used as n (like per_page)
@@ -57,5 +57,5 @@ suspend fun ApplicationCall.receiveMultipartMap(): MutableMap<String, PartData> 
     runCatching {
         receiveMultipart().toMap()
     }.getOrElse {
-        throw BadRequestException()
+        throw BadRequestException("Multipart reading failed.", it)
     }

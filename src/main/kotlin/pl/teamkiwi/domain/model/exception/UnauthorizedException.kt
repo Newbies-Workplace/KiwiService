@@ -1,3 +1,5 @@
 package pl.teamkiwi.domain.model.exception
 
-class UnauthorizedException : Exception()
+class UnauthorizedException(
+    message: String
+) : Exception(message)

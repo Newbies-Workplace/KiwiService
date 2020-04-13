@@ -26,8 +26,8 @@ class SongController(
         val userId = call.authPrincipal().userId
         val partDataMap = call.receiveMultipartMap()
 
-        val songRequest = partDataMap.getRequestOrNull<SongCreateRequest>() ?: throw BadRequestException()
-        val songItem = partDataMap.getSongOrNull() ?: throw BadRequestException()
+        val songRequest = partDataMap.getRequestOrNull<SongCreateRequest>() ?: throw BadRequestException("Error while fetching request.")
+        val songItem = partDataMap.getSongOrNull() ?: throw BadRequestException("Error while fetching song")
         val imageItem = partDataMap.getImageOrNull()
         val albumIdParam: String? = call.request.queryParameters["albumId"]
 
@@ -56,7 +56,7 @@ class SongController(
     }
 
     suspend fun getSongById(call: ApplicationCall, id: String) {
-        val song = songService.getSongById(id) ?: throw NotFoundException()
+        val song = songService.getSongById(id) ?: throw NotFoundException("Song with given id: $id was not found.")
 
         val response = with(songConverter) { song.toSongResponse() }
 

@@ -11,7 +11,7 @@ class UserService (
 ) {
 
     fun createUser(userId: String, request: UserCreateRequest): User {
-        if (userRepository.findById(userId) != null) throw AccountAlreadyExistsException()
+        if (userRepository.findById(userId) != null) throw AccountAlreadyExistsException("Account with specified id already exists.")
 
         val user =
             User(

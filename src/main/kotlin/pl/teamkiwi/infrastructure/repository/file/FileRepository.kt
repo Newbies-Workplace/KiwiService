@@ -22,7 +22,7 @@ abstract class FileRepository<T: DomainFile>(
 
             Files.deleteIfExists(path)
         }.getOrElse {
-            throw FileDeleteException()
+            throw FileDeleteException("File deleting failed with exception.", it)
         }
     }
 
@@ -30,7 +30,7 @@ abstract class FileRepository<T: DomainFile>(
         val path = configuration.uploadPath + "/" + domainFile.name
 
         if (Files.notExists(Paths.get(path))) {
-            throw NotFoundException()
+            throw NotFoundException("File with given name not found.")
         }
 
         return File(path)
@@ -48,7 +48,7 @@ abstract class FileRepository<T: DomainFile>(
 
             return domainFileForName(fileName)
         }.getOrElse {
-            throw FileSaveException()
+            throw FileSaveException("File could not be saved.", it)
         }
     }
 
@@ -56,13 +56,13 @@ abstract class FileRepository<T: DomainFile>(
 
     protected fun assertValidFileName(fileName: String) {
         if (fileName.contains("..")) {
-            throw BadRequestException()
+            throw BadRequestException("Filename contains invalid characters.")
         }
 
         val extension = fileName.getExtension()
 
         if (!configuration.allowedExtensions.contains(extension)) {
-            throw UnsupportedExtensionException()
+            throw UnsupportedExtensionException("Extension .$extension is not supported.")
         }
     }
 

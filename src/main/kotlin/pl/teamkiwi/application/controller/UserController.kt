@@ -7,7 +7,6 @@ import pl.teamkiwi.application.converter.toUserResponse
 import pl.teamkiwi.application.model.request.UserCreateRequest
 import pl.teamkiwi.application.util.authPrincipal
 import pl.teamkiwi.application.util.myReceive
-import pl.teamkiwi.domain.model.exception.BadRequestException
 import pl.teamkiwi.domain.model.exception.NoContentException
 import pl.teamkiwi.domain.model.exception.NotFoundException
 import pl.teamkiwi.domain.service.UserService
@@ -18,7 +17,7 @@ class UserController(
 
     suspend fun postUser(call: ApplicationCall) {
         val principal = call.authPrincipal()
-        val userCreateRequest = call.myReceive<UserCreateRequest>(BadRequestException())
+        val userCreateRequest = call.myReceive<UserCreateRequest>()
 
         val user = userService.createUser(principal.userId, userCreateRequest)
         val response = user.toUserResponse()
@@ -37,7 +36,7 @@ class UserController(
     }
 
     suspend fun getUserById(call: ApplicationCall, id: String) {
-        val user = userService.getUserById(id) ?: throw NotFoundException()
+        val user = userService.getUserById(id) ?: throw NotFoundException("User with given id: $id was not found.")
 
         val response = user.toUserResponse()
 

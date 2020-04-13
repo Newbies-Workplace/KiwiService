@@ -60,13 +60,13 @@ class AlbumService(
             val song = songRepository.findById(it)
 
             if (song?.albumId != null) {
-                throw BadRequestException()
+                throw BadRequestException("Song with given id: ${song.id} is already in an album.")
             }
         }
 
         //check if songIds is distinct
         if (songIds.size != songIds.distinct().size) {
-            throw BadRequestException()
+            throw BadRequestException("Song id list must be distinct.")
         }
 
         albumRepository.addSongs(albumId, songIds)
@@ -81,25 +81,25 @@ class AlbumService(
 
         //check if songIds is distinct
         if (songIds.size != songIds.distinct().size) {
-            throw BadRequestException()
+            throw BadRequestException("Song id list must be distinct.")
         }
 
         albumRepository.removeSongs(songIds)
     }
 
     private fun assertAlbumPermission(userId: String, albumId: String) {
-        val album = albumRepository.findById(albumId) ?: throw NotFoundException()
+        val album = albumRepository.findById(albumId) ?: throw NotFoundException("Album with given id: $albumId was not found.")
 
         if (album.artistId != userId) {
-            throw ForbiddenException()
+            throw ForbiddenException("You don't have rights to album with id: $albumId.")
         }
     }
 
     private fun assertSongPermission(userId: String, songId: String) {
-        val song = songRepository.findById(songId) ?: throw NotFoundException()
+        val song = songRepository.findById(songId) ?: throw NotFoundException("Song with given id: $songId was not found.")
 
         if (song.artistId != userId) {
-            throw ForbiddenException()
+            throw ForbiddenException("You don't have rights to song with id: $songId.")
         }
     }
 }

@@ -23,7 +23,7 @@ class AlbumController (
         val userId = call.authPrincipal().userId
         val partDataMap = call.receiveMultipartMap()
 
-        val albumRequest = partDataMap.getRequestOrNull<AlbumCreateRequest>() ?: throw BadRequestException()
+        val albumRequest = partDataMap.getRequestOrNull<AlbumCreateRequest>() ?: throw BadRequestException("Error while fetching request.")
         val image = partDataMap.getImageOrNull()
 
         var imageFile: ImageFile? = null
@@ -48,7 +48,7 @@ class AlbumController (
     }
 
     suspend fun getAlbumById(call: ApplicationCall, id: String) {
-        val album = albumService.getAlbumById(id) ?: throw NotFoundException()
+        val album = albumService.getAlbumById(id) ?: throw NotFoundException("Album with given id: $id was not found.")
 
         val response = with(albumConverter) { album.toAlbumResponse() }
 

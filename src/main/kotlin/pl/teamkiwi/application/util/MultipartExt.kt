@@ -52,7 +52,7 @@ fun MutableMap<String, PartData>.dispose() {
 
 fun <T: DomainFile> FileRepository<T>.save(item: PartData.FileItem): T {
     val inputStream = item.streamProvider()
-    val extension = item.originalFileName.getExtension() ?: throw BadRequestException()
+    val extension = item.originalFileName.getExtension() ?: throw BadRequestException("Error while fetching original file extension.")
 
     return save(inputStream, extension)
 }

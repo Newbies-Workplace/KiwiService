@@ -2,8 +2,8 @@ package pl.teamkiwi.domain.model.util
 
 import org.valiktor.functions.isGreaterThanOrEqualTo
 import org.valiktor.functions.isLessThanOrEqualTo
+import org.valiktor.validate
 import pl.teamkiwi.domain.model.exception.BadPaginationException
-import pl.teamkiwi.infrastructure.repository.validation.validateOrThrow
 
 data class Pagination(
     val limit: Int,
@@ -11,12 +11,16 @@ data class Pagination(
 ) {
 
     init {
-        validateOrThrow(BadPaginationException::class, this) {
-            validate(Pagination::limit)
-                .isLessThanOrEqualTo(MAX_LIMIT_SIZE)
-                .isGreaterThanOrEqualTo(MIN_LIMIT_SIZE)
-            validate(Pagination::offset)
-                .isGreaterThanOrEqualTo(0)
+        runCatching {
+            validate(this) {
+                validate(Pagination::limit)
+                    .isLessThanOrEqualTo(MAX_LIMIT_SIZE)
+                    .isGreaterThanOrEqualTo(MIN_LIMIT_SIZE)
+                validate(Pagination::offset)
+                    .isGreaterThanOrEqualTo(0)
+            }
+        }.getOrElse {
+            throw BadPaginationException("Bad pagination parameters.", it)
         }
     }
 }

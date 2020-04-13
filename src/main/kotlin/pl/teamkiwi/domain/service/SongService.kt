@@ -45,10 +45,10 @@ class SongService(
 
         //add song to album if albumId is not null
         albumId?.let { id ->
-            val album = albumRepository.findById(id) ?: throw NotFoundException()
+            val album = albumRepository.findById(id) ?: throw NotFoundException("Album with given id: $id was not found.")
 
             if (album.artistId != userId) {
-                throw ForbiddenException()
+                throw ForbiddenException("You don't have rights to album with id: $id.")
             }
 
             albumRepository.addSongs(id, listOf(songId))
@@ -64,10 +64,10 @@ class SongService(
         songRepository.findAll(pagination)
 
     fun deleteSong(id: String, userId: String) {
-        val song = songRepository.findById(id) ?: throw NotFoundException()
+        val song = songRepository.findById(id) ?: throw NotFoundException("Song with given id: $id was not found.")
 
         if (userId != song.artistId) {
-            throw ForbiddenException()
+            throw ForbiddenException("You don't have rights to song with id: ${song.id}.")
         }
 
         songFileRepository.delete(song.file)
