@@ -1,5 +1,6 @@
 package pl.teamkiwi
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -14,12 +15,10 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.commandLineEnvironment
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
-import org.koin.core.logger.PrintLogger
 import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.slf4j.event.Level
 import pl.jutupe.Exposed
-import pl.teamkiwi.application.auth.server
 import pl.teamkiwi.application.router.albumRoutes
 import pl.teamkiwi.application.router.fileRoutes
 import pl.teamkiwi.application.router.songRoutes
@@ -32,6 +31,8 @@ import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
 import pl.teamkiwi.infrastructure.repository.exposed.table.Albums
 import pl.teamkiwi.infrastructure.repository.exposed.table.Songs
 import pl.teamkiwi.infrastructure.repository.exposed.table.Users
+import pl.teamkiwi.kiwi_ktor_authentication.exception.KiwiUnauthorizedException
+import pl.teamkiwi.kiwi_ktor_authentication.kiwiServer
 
 fun main(args: Array<String>) {
     embeddedServer(
@@ -43,15 +44,13 @@ fun main(args: Array<String>) {
 @Suppress("unused") // Referenced in application.conf
 fun Application.mainModule() {
     install(Koin) {
-        logger(PrintLogger())
-
         modules(
             listOf(module)
         )
     }
 
     install(CallLogging) {
-        level = Level.INFO
+        level = Level.DEBUG
     }
 
     install(Exposed) {
@@ -73,8 +72,10 @@ fun Application.mainModule() {
     }
 
     install(Authentication) {
-        server {
-            authServerUrl { getProp("kiwi.auth.url") }
+        kiwiServer {
+            url = getProp("kiwi.auth.url")
+
+            deserialize { string, type -> jacksonObjectMapper().readValue(string, type.javaObjectType) }
         }
     }
 
@@ -88,6 +89,7 @@ fun Application.mainModule() {
         exception<ConflictException>(HttpStatusCode.Conflict)
         exception<NoContentException>(HttpStatusCode.NoContent)
         exception<UnauthorizedException>(HttpStatusCode.Unauthorized)
+        exception<KiwiUnauthorizedException>(HttpStatusCode.Unauthorized)
         exception<UnsupportedExtensionException>(HttpStatusCode.UnsupportedMediaType)
         exception<FileSaveException>(HttpStatusCode.InternalServerError)
         exception<FileDeleteException>(HttpStatusCode.InternalServerError)

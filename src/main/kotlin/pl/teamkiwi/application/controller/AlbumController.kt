@@ -12,6 +12,7 @@ import pl.teamkiwi.domain.model.exception.NoContentException
 import pl.teamkiwi.domain.model.exception.NotFoundException
 import pl.teamkiwi.domain.service.AlbumService
 import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
+import pl.teamkiwi.kiwi_ktor_authentication.util.authPrincipal
 
 class AlbumController (
     private val albumService: AlbumService,

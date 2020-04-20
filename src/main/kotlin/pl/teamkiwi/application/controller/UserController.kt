@@ -5,11 +5,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
 import pl.teamkiwi.application.converter.toUserResponse
 import pl.teamkiwi.application.model.request.UserCreateRequest
-import pl.teamkiwi.application.util.authPrincipal
 import pl.teamkiwi.application.util.myReceive
 import pl.teamkiwi.domain.model.exception.NoContentException
 import pl.teamkiwi.domain.model.exception.NotFoundException
 import pl.teamkiwi.domain.service.UserService
+import pl.teamkiwi.kiwi_ktor_authentication.util.authPrincipal
 
 class UserController(
     private val userService: UserService

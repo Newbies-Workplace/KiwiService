@@ -14,6 +14,7 @@ import pl.teamkiwi.domain.model.exception.NotFoundException
 import pl.teamkiwi.domain.service.SongService
 import pl.teamkiwi.infrastructure.repository.file.ImageFileRepository
 import pl.teamkiwi.infrastructure.repository.file.SongFileRepository
+import pl.teamkiwi.kiwi_ktor_authentication.util.authPrincipal
 
 class SongController(
     private val songService: SongService,

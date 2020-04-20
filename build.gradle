@@ -37,7 +37,10 @@ repositories {
     mavenLocal()
     jcenter()
     maven { url 'https://kotlin.bintray.com/ktor' }
-    maven { url 'https://jitpack.io' }
+    maven {
+        url 'https://jitpack.io'
+        credentials { username authToken }
+    }
 }
 
 dependencies {
@@ -51,12 +54,10 @@ dependencies {
 
     //features
     implementation "com.github.JUtupe:ktor-exposed:$ktor_exposed_feature"
+    implementation "com.gitlab.team-kiwi:kiwi-ktor-authentication:$kiwi_ktor_authentication"
 
     //auth
     implementation "io.ktor:ktor-auth:$ktor_version"
-
-    //security
-    implementation "at.favre.lib:bcrypt:$bcrypt_version"
 
     //serialisation
     implementation "io.ktor:ktor-jackson:$ktor_version"

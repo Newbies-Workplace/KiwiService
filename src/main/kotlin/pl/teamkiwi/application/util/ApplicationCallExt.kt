@@ -1,13 +1,10 @@
 package pl.teamkiwi.application.util
 
 import io.ktor.application.ApplicationCall
-import io.ktor.auth.authentication
 import io.ktor.http.content.PartData
 import io.ktor.request.receive
 import io.ktor.request.receiveMultipart
-import pl.teamkiwi.application.auth.AuthPrincipal
 import pl.teamkiwi.domain.model.exception.BadRequestException
-import pl.teamkiwi.domain.model.exception.UnauthorizedException
 import pl.teamkiwi.domain.model.util.DEFAULT_PAGINATION
 import pl.teamkiwi.domain.model.util.Pagination
 
@@ -35,9 +32,6 @@ fun ApplicationCall.idParameter(): String =
 
 fun ApplicationCall.fileNameParameter(): String =
     parameters["fileName"] ?: throw BadRequestException("'fileName' parameter not present.")
-
-fun ApplicationCall.authPrincipal(): AuthPrincipal =
-    authentication.principal() ?: throw UnauthorizedException("AuthPrincipal was not found in request (probably our fault).")
 
 /**
  * limit is used as n (like per_page)

@@ -12,6 +12,8 @@ inline fun <reified T : Throwable> StatusPages.Configuration.exception(code: Htt
             it.message ?: "No message provided."
         )
 
+        it.printStackTrace()
+
         call.respond(code, response)
     }
 }
