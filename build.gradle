@@ -39,7 +39,7 @@ repositories {
     maven { url 'https://kotlin.bintray.com/ktor' }
     maven {
         url 'https://jitpack.io'
-        credentials { username authToken }
+        credentials { username System.getenv("KIWI_JITPACK_TOKEN") }
     }
 }
 
