@@ -3,10 +3,14 @@ package pl.teamkiwi.application.controller
 import io.ktor.application.ApplicationCall
 import io.ktor.http.HttpStatusCode
 import io.ktor.response.respond
+import pl.jutupe.ktor_rabbitmq.publish
 import pl.teamkiwi.application.converter.SongConverter
+import pl.teamkiwi.application.model.event.SongCreatedEvent
+import pl.teamkiwi.application.model.event.SongDeletedEvent
 import pl.teamkiwi.application.model.request.SongCreateRequest
 import pl.teamkiwi.application.util.*
 import pl.teamkiwi.domain.model.entity.ImageFile
+import pl.teamkiwi.domain.model.entity.Song
 import pl.teamkiwi.domain.model.entity.SongFile
 import pl.teamkiwi.domain.model.exception.BadRequestException
 import pl.teamkiwi.domain.model.exception.NoContentException
@@ -43,6 +47,7 @@ class SongController(
             val response = with(songConverter) { song.toSongResponse() }
 
             call.respond(HttpStatusCode.Created, response)
+            publishSongCreatedEvent(call, song)
 
             partDataMap.dispose()
         }.getOrElse { exception ->
@@ -84,7 +89,21 @@ class SongController(
         val userId = call.authPrincipal().userId
 
         songService.deleteSong(id, userId)
+        publishSongDeletedEvent(call, id)
 
         call.respond("")
+    }
+
+    private fun publishSongCreatedEvent(call: ApplicationCall, song: Song) {
+        val payload = with(songConverter) { song.toSongPayload() }
+        val event = SongCreatedEvent(payload)
+
+        call.publish(KIWI_LIBRARY_EXCHANGE, KIWI_SONG_CREATED_KEY, null, event)
+    }
+
+    private fun publishSongDeletedEvent(call: ApplicationCall, id: String) {
+        val event = SongDeletedEvent(id)
+
+        call.publish(KIWI_LIBRARY_EXCHANGE, KIWI_SONG_DELETED_KEY, null, event)
     }
 }

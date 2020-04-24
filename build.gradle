@@ -54,9 +54,11 @@ dependencies {
 
     //features
     implementation "com.github.JUtupe:ktor-exposed:$ktor_exposed_feature"
-    implementation "com.gitlab.team-kiwi:kiwi-ktor-authentication:$kiwi_ktor_authentication"
 
-    //auth
+    implementation "com.github.JUtupe:ktor-rabbitmq:$ktor_rabbitmq_feature"
+    implementation "com.rabbitmq:amqp-client:$rabbitmq_version"
+
+    implementation "com.gitlab.team-kiwi:kiwi-ktor-authentication:$kiwi_ktor_authentication"
     implementation "io.ktor:ktor-auth:$ktor_version"
 
     //serialisation
