@@ -19,12 +19,12 @@ import org.koin.ktor.ext.Koin
 import org.koin.ktor.ext.get
 import org.slf4j.event.Level
 import pl.jutupe.Exposed
+import pl.jutupe.ktor_rabbitmq.RabbitMQ
 import pl.teamkiwi.application.router.albumRoutes
 import pl.teamkiwi.application.router.fileRoutes
 import pl.teamkiwi.application.router.songRoutes
 import pl.teamkiwi.application.router.userRoutes
-import pl.teamkiwi.application.util.exception
-import pl.teamkiwi.application.util.getProp
+import pl.teamkiwi.application.util.*
 import pl.teamkiwi.di.module
 import pl.teamkiwi.domain.model.exception.*
 import pl.teamkiwi.infrastructure.repository.exposed.table.AlbumSongs
@@ -71,6 +71,22 @@ fun Application.mainModule() {
         method(HttpMethod.Put)
     }
 
+    install(RabbitMQ) {
+        uri = getProp("kiwi.rabbit.url")
+        connectionName = "Kiwi Service Connection"
+
+        serialize { jacksonObjectMapper().writeValueAsBytes(it) }
+        deserialize { bytes, type -> jacksonObjectMapper().readValue(bytes, type.javaObjectType) }
+
+        initialize {
+            exchangeDeclare(KIWI_LIBRARY_EXCHANGE,"direct", true)
+            queueDeclare(KIWI_SONG_CREATED_QUEUE, true, false, false, emptyMap())
+            queueDeclare(KIWI_SONG_DELETED_QUEUE, true, false, false, emptyMap())
+            queueBind(KIWI_SONG_CREATED_QUEUE, KIWI_LIBRARY_EXCHANGE, KIWI_SONG_CREATED_KEY)
+            queueBind(KIWI_SONG_DELETED_QUEUE, KIWI_LIBRARY_EXCHANGE, KIWI_SONG_DELETED_KEY)
+        }
+    }
+
     install(Authentication) {
         kiwiServer {
             url = getProp("kiwi.auth.url")
@@ -88,7 +104,6 @@ fun Application.mainModule() {
         exception<NotFoundException>(HttpStatusCode.NotFound)
         exception<ConflictException>(HttpStatusCode.Conflict)
         exception<NoContentException>(HttpStatusCode.NoContent)
-        exception<UnauthorizedException>(HttpStatusCode.Unauthorized)
         exception<KiwiUnauthorizedException>(HttpStatusCode.Unauthorized)
         exception<UnsupportedExtensionException>(HttpStatusCode.UnsupportedMediaType)
         exception<FileSaveException>(HttpStatusCode.InternalServerError)
